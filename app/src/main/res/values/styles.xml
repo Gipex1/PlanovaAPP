@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="OtpBox">
+        <item name="android:layout_width">62dp</item>
+        <item name="android:layout_height">62dp</item>
+        <item name="android:layout_margin">7dp</item>
+
+        <item name="android:gravity">center</item>
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">1</item>
+
+        <item name="android:textColor">#E6E6E6</item>
+        <item name="android:textSize">18sp</item>
+
+        <item name="android:background">@drawable/otp_box_bg</item>
+    </style>
+</resources>

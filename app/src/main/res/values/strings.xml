@@ -1,0 +1,91 @@
+<resources>
+
+    <!-- APP -->
+    <string name="app_name">Planova</string>
+
+    <!-- LOGIN -->
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="login_subtitle">Войди в свой аккаунт,\nчтобы продолжить</string>
+
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+
+    <string name="remember_me">Запомнить меня</string>
+    <string name="forgot_password">Забыли пароль?</string>
+
+    <string name="login">Войти</string>
+
+    <string name="or">или</string>
+
+    <string name="continue_google">Продолжить с Google</string>
+    <string name="continue_apple">Продолжить с Apple</string>
+
+    <string name="no_account">Нет аккаунта?</string>
+    <string name="register">Зарегистрироваться</string>
+
+    <!-- REGISTER -->
+    <string name="create_account">Создать аккаунт</string>
+    <string name="second_text">Зарегистрируйся, чтобы сохранять цели и планы</string>
+    <string name="username">Имя пользователя</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="already_have_account">Уже есть аккаунт?</string>
+    <string name="treb1">Минимум 8 символов</string>
+    <string name="treb2">Хотя бы одна заглавная буква</string>
+    <string name="treb3">Хотя бы одна цифра</string>
+
+
+    <!-- FORGOT PASSWORD -->
+    <string name="reset_password">Сброс пароля</string>
+    <string name="send_code">Отправить код</string>
+    <string name="verification_code">Код подтверждения</string>
+    <string name="verify">Подтвердить</string>
+
+    <!-- HOME -->
+    <string name="new_goal">Новая цель</string>
+    <string name="category">Категория</string>
+    <string name="goal">Цель</string>
+    <string name="difficulty">Сложность</string>
+    <string name="time_per_day">Время в день</string>
+    <string name="generate_plan">Сгенерировать план</string>
+
+    <!-- GENERATING -->
+    <string name="generating_title">Создание плана...</string>
+    <string name="generating_subtitle">
+        Искусственный интеллект создаёт ваш персональный план
+    </string>
+
+    <!-- RESULT -->
+    <string name="ai_advice">Совет AI</string>
+    <string name="save_plan">Сохранить план</string>
+    <string name="edit_plan">Редактировать</string>
+    <string name="regenerate">Сгенерировать заново</string>
+
+    <!-- GOALS -->
+    <string name="my_goals">Мои цели</string>
+    <string name="active">Активна</string>
+    <string name="completed">Выполнена</string>
+    <string name="delete">Удалить</string>
+
+    <!-- PROFILE -->
+    <string name="profile">Профиль</string>
+    <string name="settings">Настройки</string>
+    <string name="logout">Выйти</string>
+
+    <!-- SETTINGS -->
+    <string name="theme">Тема</string>
+    <string name="dark_theme">Тёмная тема</string>
+    <string name="light_theme">Светлая тема</string>
+    <string name="notifications">Уведомления</string>
+    <string name="language">Язык</string>
+    <string name="planAccept">Твой план готов!</string>
+    <string name="sovet">Совет от AI</string>
+    <string name="namePlan">Название плана</string>
+    <string name="descriptonPlan">Описание</string>
+    <string name="planForday">План на 7 дней</string>
+    <string name="savePlan">Сохранить</string>
+    <string name="resetPlan">Преределать</string>
+    <string name="editPlan">Изменить</string>
+    <string name="deletePlan">Удалить</string>
+    <string name="nick_name">nick name</string>
+
+</resources>

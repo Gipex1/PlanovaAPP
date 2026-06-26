@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- DARK THEME -->
+    <style name="Base.Theme.Planova" parent="Theme.Material3.Dark.NoActionBar">
+
+        <!-- PRIMARY -->
+        <item name="colorPrimary">@color/neon_green</item>
+        <item name="colorSecondary">@color/neon_green</item>
+
+        <!-- BACKGROUND -->
+        <item name="android:windowBackground">@color/dark_background</item>
+
+        <!-- STATUS BAR -->
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_background</item>
+
+        <!-- TEXT -->
+        <item name="android:textColor">@color/dark_text_primary</item>
+
+    </style>
+
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- BASIC -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- NEON GREEN -->
+    <color name="neon_green">#1EFF7A</color>
+    <color name="neon_green_dark">#05D754</color>
+
+    <!-- DARK THEME -->
+    <color name="dark_background">#050505</color>
+    <color name="dark_surface">#101010</color>
+    <color name="dark_card">#151515</color>
+
+    <color name="dark_border">#2A2A2A</color>
+    <color name="green_black_card">#060F0C</color>
+    <color name="green_border">#212927</color>
+
+    <color name="dark_text_primary">#FFFFFF</color>
+    <color name="dark_text_secondary">#B3B3B3</color>
+
+    <!-- LIGHT THEME -->
+    <color name="light_background">#F5F5F5</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_card">#FFFFFF</color>
+
+    <color name="light_border">#E0E0E0</color>
+
+    <color name="light_text_primary">#111111</color>
+    <color name="light_text_secondary">#666666</color>
+
+    <!-- STATUS -->
+    <color name="success">#00C853</color>
+    <color name="warning">#FFD600</color>
+    <color name="error">#FF5252</color>
+
+
+
+</resources>

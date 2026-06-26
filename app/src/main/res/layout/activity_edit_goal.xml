@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0F1817"
+    tools:context=".Edit_Goal">
+
+    <!-- Кнопка "Назад" -->
+    <ImageView
+        android:id="@+id/backArrow"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_left_arrow"
+        app:tint="@color/white" />
+
+    <!-- Заголовок -->
+    <TextView
+        android:id="@+id/titleGenerating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Редактируем план"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="60dp" />
+
+    <!-- Поле "Цель" (название плана) -->
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Название плана"
+        android:textColor="@color/dark_text_secondary"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="150dp"
+        android:layout_marginStart="35dp"/>
+
+    <EditText
+        android:id="@+id/etPlanTitle"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/button_background"
+        android:hint="Введите название"
+        android:textColorHint="@color/dark_text_secondary"
+        android:textColor="@color/white"
+        android:paddingStart="30dp"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"/>
+
+    <!-- Поле "Описание" (добавил) -->
+    <TextView
+        android:id="@+id/subtitleDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Описание"
+        android:textColor="@color/dark_text_secondary"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPlanTitle"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="35dp"/>
+
+    <EditText
+        android:id="@+id/etPlanDescription"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/button_background"
+        android:hint="Краткое описание"
+        android:textColorHint="@color/dark_text_secondary"
+        android:textColor="@color/white"
+        android:paddingStart="30dp"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtitleDesc"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"/>
+
+    <!-- Заголовок для шагов -->
+    <TextView
+        android:id="@+id/subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Шаги плана"
+        android:textColor="@color/dark_text_secondary"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPlanDescription"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="35dp"/>
+
+    <!-- Список шагов (RecyclerView) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSteps"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:background="@drawable/card_background"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtitle2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnAddStep"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <!-- Кнопка "Добавить шаг" -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAddStep"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:text="+ Добавить шаг"
+        android:textSize="16sp"
+        android:textColor="@color/neon_green"
+        android:background="@drawable/button_background"
+        app:backgroundTint="@null"
+        app:strokeColor="@color/neon_green"
+        app:strokeWidth="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvSteps"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Кнопка "Сохранить изменения" -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSave"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:text="Сохранить изменения"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/neon_green_dark"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAddStep"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

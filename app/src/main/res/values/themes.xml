@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- LIGHT THEME -->
+    <style name="Base.Theme.Planova" parent="Theme.Material3.Light.NoActionBar">
+
+        <!-- PRIMARY -->
+        <item name="colorPrimary">@color/neon_green</item>
+        <item name="colorSecondary">@color/neon_green</item>
+
+        <!-- BACKGROUND -->
+        <item name="android:windowBackground">@color/light_background</item>
+
+        <!-- STATUS BAR -->
+        <item name="android:statusBarColor">@color/light_background</item>
+        <item name="android:navigationBarColor">@color/light_background</item>
+
+        <!-- TEXT -->
+        <item name="android:textColor">@color/light_text_primary</item>
+
+    </style>
+
+    <style name="Theme.Planova" parent="Base.Theme.Planova" />
+
+</resources>

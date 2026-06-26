@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/button_background"
+    android:padding="12dp"
+    android:layout_margin="8dp"
+    android:gravity="center_vertical">
+
+    <!-- Иконка категории в кружке (заглушка) -->
+    <FrameLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button_background">
+        <ImageView
+            android:id="@+id/ivCategoryIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_book"
+            android:tint="@color/neon_green"/>
+    </FrameLayout>
+
+    <!-- Блок с названием и категорией -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="12dp">
+
+        <TextView
+            android:id="@+id/tvPlanTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="Название плана" />
+
+        <TextView
+            android:id="@+id/tvPlanCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dark_text_secondary"
+            android:textSize="12sp"
+            android:text="Категория" />
+    </LinearLayout>
+
+    <!-- Прогресс и процент -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="80dp"
+            android:layout_height="6dp"
+            android:progress="50"
+            android:max="100"
+            android:progressTint="@color/neon_green"
+            android:progressBackgroundTint="@color/dark_text_secondary" />
+
+        <TextView
+            android:id="@+id/tvProgressPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/neon_green"
+            android:textSize="14sp"
+            android:text="50%" />
+    </LinearLayout>
+
+</LinearLayout>
