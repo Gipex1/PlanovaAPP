@@ -15,41 +15,53 @@
         android:theme="@style/Theme.Planova"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Goal_List"
+            android:name=".setting"
             android:exported="false" />
-        <activity
-            android:name=".Edit_Plan_Step"
-            android:exported="false" />
-        <activity
-            android:name=".Edit_Goal"
-            android:exported="false" />
-        <activity
-            android:name=".My_Goals"
-            android:exported="false" />
+        <!-- Все экраны в портретной ориентации -->
         <activity
             android:name=".CheckPlan"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Goal_List"
+            android:exported="false"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Edit_Goal"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".My_Goals"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Generate"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity_User"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ForgotPasswordActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" /> <!-- Home – LAUNCHER и портрет -->
         <activity
             android:name=".Home"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".RegisterActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".edit_code"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

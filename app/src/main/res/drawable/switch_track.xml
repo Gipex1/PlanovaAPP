@@ -1,0 +1,17 @@
+<!-- res/drawable/switch_track.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#4A6FA5"/>
+            <corners android:radius="16dp"/>
+            <size android:height="28dp" android:width="52dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#40FFFFFF"/>
+            <corners android:radius="16dp"/>
+            <size android:height="28dp" android:width="52dp"/>
+        </shape>
+    </item>
+</selector>
