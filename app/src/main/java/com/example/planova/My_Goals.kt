@@ -10,9 +10,12 @@ import com.example.planova.adapter.PlanAdapter
 import com.example.planova.adapter.PlanItem
 import com.example.planova.data.PlanResponse
 import com.example.planova.data.StepResponse
+import com.example.planova.data.StepDto
+import com.example.planova.data.StepProgressItem
 import com.example.planova.databinding.ActivityMyGoalsBinding
 import com.example.planova.network.ApiClient
 import com.example.planova.utils.SharedPrefs
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,10 +41,10 @@ class My_Goals : AppCompatActivity() {
             return
         }
 
-        // Настраиваем RecyclerView
+        // Настраиваем RecyclerView с кликом
         adapter = PlanAdapter(emptyList()) { plan ->
-            // Обработка клика по плану
-            Toast.makeText(this, "Выбран: ${plan.title}", Toast.LENGTH_SHORT).show()
+            // Обработка клика по плану – открываем CheckPlan
+            openPlanDetail(plan)
         }
         binding.rvPlans.layoutManager = LinearLayoutManager(this)
         binding.rvPlans.adapter = adapter
@@ -49,19 +52,22 @@ class My_Goals : AppCompatActivity() {
         // Загружаем планы
         loadPlans(userId)
 
-        var next1 = findViewById<ImageView>(R.id.menu_home)
-        next1.setOnClickListener {
-            startActivity(Intent(this@My_Goals, Home::class.java))
+        // Нижнее меню
+        binding.menuHome.setOnClickListener {
+            startActivity(Intent(this, Home::class.java))
         }
 
-        var next2 = findViewById<ImageView>(R.id.menu_profile)
-        next2.setOnClickListener {
-            startActivity(Intent(this@My_Goals, Activity_User::class.java))
+        binding.menuProfile.setOnClickListener {
+            startActivity(Intent(this, Activity_User::class.java))
         }
 
-        var next3 = findViewById<ImageView>(R.id.menu_history)
-        next3.setOnClickListener {
+        binding.menuHistory.setOnClickListener {
             Toast.makeText(this, "Еще в разработке", Toast.LENGTH_SHORT).show()
+        }
+
+        // Кнопка "+" – переход на генерацию
+        binding.btnAdd.setOnClickListener {
+            startActivity(Intent(this, Home::class.java))
         }
     }
 
@@ -92,6 +98,47 @@ class My_Goals : AppCompatActivity() {
                 Toast.makeText(this@My_Goals, "Ошибка сети: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun openPlanDetail(plan: PlanItem) {
+        val userId = prefs.getUserId()
+        if (userId == null) {
+            Toast.makeText(this, "Сначала войдите", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        ApiClient.apiService.getPlan(userId, plan.id)
+            .enqueue(object : Callback<PlanResponse> {
+                override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
+                    if (response.isSuccessful) {
+                        val data = response.body()!!
+                        val intent = Intent(this@My_Goals, Goal_List::class.java) // ← сюда
+                        intent.putExtra("planId", data.id)
+                        intent.putExtra("planTitle", data.title)
+                        intent.putExtra("category", data.category ?: "Общее")
+                        intent.putExtra("progress", calculateProgress(data.steps))
+                        intent.putExtra("totalDays", data.steps.size)
+                        // Передаём шаги для отображения
+                        val stepsJson = Gson().toJson(
+                            data.steps.map {
+                                StepProgressItem(
+                                    it.sortOrder,
+                                    it.description,
+                                    it.isCompleted
+                                )
+                            }
+                        )
+                        intent.putExtra("stepsJson", stepsJson)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(this@My_Goals, "Не удалось загрузить план", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<PlanResponse>, t: Throwable) {
+                    Toast.makeText(this@My_Goals, "Ошибка сети", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     private fun calculateProgress(steps: List<StepResponse>?): Int {

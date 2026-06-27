@@ -51,7 +51,6 @@
         android:layout_marginStart="80dp"/>
 
     <!-- Поле "Прогресс" -->
-
     <LinearLayout
         android:id="@+id/llSave"
         android:layout_width="match_parent"
@@ -64,6 +63,7 @@
         android:layout_marginTop="150dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,6 +77,7 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/tvProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
@@ -99,12 +100,12 @@
             android:progressBackgroundTint="@color/dark_text_secondary" />
 
         <TextView
+            android:id="@+id/tvDaysInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="день 0 из 7"
             android:textColor="@color/dark_text_secondary"
             android:textSize="16sp"/>
-
     </LinearLayout>
 
     <!-- Заголовок для шагов -->
@@ -138,7 +139,7 @@
         android:layout_marginBottom="20dp"
         app:layout_constraintVertical_chainStyle="packed"/>
 
-    <!-- Кнопка "Сохранить изменения" -->
+    <!-- Кнопка "Открыть план" -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSave"
         android:layout_width="300dp"
@@ -154,5 +155,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
