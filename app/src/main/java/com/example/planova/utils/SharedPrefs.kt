@@ -17,11 +17,8 @@ class SharedPrefs(context: Context) {
     }
 
     fun getUserId(): Long? = if (prefs.contains("userId")) prefs.getLong("userId", 0) else null
-
     fun getEmail(): String? = prefs.getString("email", null)
-
     fun getPassword(): String? = prefs.getString("password", null)
-
     fun isRemember(): Boolean = prefs.getBoolean("remember", false)
 
     fun clear() = prefs.edit().clear().apply()

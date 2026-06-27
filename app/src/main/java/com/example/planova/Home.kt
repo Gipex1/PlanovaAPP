@@ -33,6 +33,14 @@ class Home : AppCompatActivity() {
             val goal = editTextGoal.text.toString().trim()
 
             if (goal.isNotEmpty()) {
+
+                // В Home.kt перед startActivity(Intent(this, Generate::class.java))
+                val userId = com.example.planova.utils.SharedPrefs(this).getUserId()
+                if (userId == null) {
+                    Toast.makeText(this, "Сначала войдите в аккаунт", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 val intent = Intent(this, Generate::class.java)
                 intent.putExtra("goal", goal)
                 startActivity(intent)

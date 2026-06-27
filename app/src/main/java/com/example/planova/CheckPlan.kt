@@ -2,14 +2,13 @@ package com.example.planova
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.planova.adapter.StepAdapter
 import com.example.planova.data.*
 import com.example.planova.databinding.ActivityCheckPlanBinding
 import com.example.planova.network.ApiClient
@@ -25,7 +24,7 @@ class CheckPlan : AppCompatActivity() {
     private lateinit var binding: ActivityCheckPlanBinding
     private lateinit var prefs: SharedPrefs
     private var planId: Long = -1
-    private var goal: String = "" // для перегенерации
+    private var goal: String = ""
     private var title: String = ""
     private var description: String = ""
     private var targetDate: String = ""
@@ -52,83 +51,52 @@ class CheckPlan : AppCompatActivity() {
         description = intent.getStringExtra("description") ?: "Описание отсутствует"
         targetDate = intent.getStringExtra("targetDate") ?: ""
         val stepsJson = intent.getStringExtra("stepsJson") ?: "[]"
+
         val type = object : TypeToken<List<StepDto>>() {}.type
-        steps = try {
-            Gson().fromJson(stepsJson, type) ?: emptyList()
-        } catch (e: Exception) {
-            emptyList()
-        }
-        Log.d("CheckPlan", "stepsJson = $stepsJson")
+        steps = Gson().fromJson(stepsJson, type)
 
         // Заполняем UI
         binding.tvPlanTitle.text = title
         binding.tvPlanDescription.text = description
 
         binding.rvSteps.layoutManager = LinearLayoutManager(this)
-        binding.rvSteps.adapter = AllStepAdapter(steps)
+        binding.rvSteps.adapter = StepAdapter(steps)
 
         // Назад
         binding.backArrow.setOnClickListener { finish() }
 
-        // ===== 1. СОХРАНИТЬ =====
-        if (planId != -1L) {
-            binding.llSave.visibility = android.view.View.GONE
-        } else {
-            binding.llSave.setOnClickListener {
-                savePlan(title, description, targetDate, steps)
-            }
+        // ===== ВСЕ 4 КНОПКИ ВСЕГДА ВИДНЫ =====
+        // Сохранить
+        binding.llSave.setOnClickListener {
+            savePlan(title, description, targetDate, steps)
         }
 
-        // ===== 2. ПЕРЕДЕЛАТЬ (повторная генерация) =====
+        // Переделать
         binding.llReset.setOnClickListener {
             regeneratePlan()
         }
 
-        // ===== 3. РЕДАКТИРОВАТЬ =====
+        // Редактировать
         binding.llEdit.setOnClickListener {
-            if (planId == -1L) {
-                Toast.makeText(this, "Сначала сохраните план", Toast.LENGTH_SHORT).show()
-            } else {
-                val intent = Intent(this, Edit_Goal::class.java)
-                intent.putExtra("planId", planId)
-                intent.putExtra("title", title)
-                intent.putExtra("description", description)
-                intent.putExtra("stepsJson", stepsJson)
-                startActivity(intent)
-            }
+            val intent = Intent(this, Edit_Goal::class.java)
+            intent.putExtra("planId", planId)
+            intent.putExtra("title", title)
+            intent.putExtra("description", description)
+            intent.putExtra("stepsJson", stepsJson)
+            startActivity(intent)
         }
 
-        // ===== 4. УДАЛИТЬ =====
+        // Удалить
         binding.llDelete.setOnClickListener {
-            if (planId == -1L) {
-                Toast.makeText(this, "Нет плана для удаления", Toast.LENGTH_SHORT).show()
-            } else {
-                deletePlan(planId)
-            }
+            deletePlan(planId)
         }
 
         // Нижнее меню – переход на список планов
         binding.menuBooks.setOnClickListener {
             startActivity(Intent(this, My_Goals::class.java))
         }
-
-        var next1 = findViewById<ImageView>(R.id.menu_profile)
-        next1.setOnClickListener {
-            startActivity(Intent(this@CheckPlan, Activity_User::class.java))
-        }
-
-        var next2 = findViewById<ImageView>(R.id.menu_book)
-        next2.setOnClickListener {
-            startActivity(Intent(this@CheckPlan, My_Goals::class.java))
-        }
-
-        var next3 = findViewById<ImageView>(R.id.menu_history)
-        next3.setOnClickListener {
-            Toast.makeText(this, "Еще в разработке", Toast.LENGTH_SHORT).show()
-        }
     }
 
-    // ---------- СОХРАНЕНИЕ ----------
     private fun savePlan(title: String, description: String, targetDate: String, steps: List<StepDto>) {
         val userId = prefs.getUserId()
         if (userId == null) {
@@ -163,24 +131,21 @@ class CheckPlan : AppCompatActivity() {
             })
     }
 
-    // ---------- ПЕРЕДЕЛАТЬ (генерация заново) ----------
     private fun regeneratePlan() {
         if (goal.isEmpty()) {
             Toast.makeText(this, "Нечего переделывать: цель не найдена", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Показываем прогресс (можно сделать видимым ProgressBar)
         binding.llReset.isEnabled = false
 
-        ApiClient.apiService.generate(GenerateRequest(goal))
+        ApiClient.apiService.generate(prefs.getUserId()!!, GenerateRequest(goal))
             .enqueue(object : Callback<GenerateResponse> {
                 override fun onResponse(call: Call<GenerateResponse>, response: Response<GenerateResponse>) {
                     binding.llReset.isEnabled = true
                     if (response.isSuccessful) {
                         val newPlan = response.body()
                         if (newPlan != null) {
-                            // Обновляем данные на экране
                             title = newPlan.title
                             description = newPlan.description
                             targetDate = newPlan.targetDate
@@ -188,7 +153,7 @@ class CheckPlan : AppCompatActivity() {
 
                             binding.tvPlanTitle.text = title
                             binding.tvPlanDescription.text = description
-                            binding.rvSteps.adapter = AllStepAdapter(steps)
+                            binding.rvSteps.adapter = StepAdapter(steps)
 
                             Toast.makeText(this@CheckPlan, "План переделан!", Toast.LENGTH_SHORT).show()
                         } else {
@@ -207,8 +172,12 @@ class CheckPlan : AppCompatActivity() {
             })
     }
 
-    // ---------- УДАЛЕНИЕ ----------
     private fun deletePlan(id: Long) {
+        if (id == -1L) {
+            Toast.makeText(this, "План ещё не сохранён", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val userId = prefs.getUserId()
         if (userId == null) {
             Toast.makeText(this, "Сначала войдите", Toast.LENGTH_SHORT).show()

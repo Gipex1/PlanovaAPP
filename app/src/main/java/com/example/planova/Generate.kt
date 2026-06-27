@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.Toast
@@ -19,6 +18,7 @@ import com.example.planova.data.StepDto
 import com.example.planova.network.ApiClient
 import com.example.planova.utils.SharedPrefs
 import com.google.android.material.button.MaterialButton
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,7 +27,6 @@ class Generate : AppCompatActivity() {
 
     private lateinit var logoInnerCircle: ImageView
     private lateinit var cancelButton: MaterialButton
-
     private lateinit var prefs: SharedPrefs
 
     private var goal: String = ""
@@ -38,54 +37,41 @@ class Generate : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_generate)
 
-        prefs = SharedPrefs(this)
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+        prefs = SharedPrefs(this)
         logoInnerCircle = findViewById(R.id.logoInnerCircle)
         cancelButton = findViewById(R.id.cancelButton)
 
-        // Получаем цель
         goal = intent.getStringExtra("goal") ?: ""
-        Log.d("Generate", "goal = '$goal'") // посмотри, что приходит
 
-        // Валидация
-        if (!validateGoal(goal)) {
-            Toast.makeText(this, "Введите осмысленную цель (минимум 3 буквы)", Toast.LENGTH_LONG).show()
+        if (goal.isEmpty()) {
+            Toast.makeText(this, "Введите цель", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        // Запускаем вращение
         startInnerCircleRotation()
-
-        // Отправляем запрос
-        generatePlan(goal)
+        generatePlan()
 
         cancelButton.setOnClickListener {
             finish()
         }
     }
 
-    private fun validateGoal(goal: String): Boolean {
-        if (goal.length < 3) return false
-        return goal.any { it.isLetter() }
-    }
-
-    private fun generatePlan(goal: String) {
+    private fun generatePlan() {
         val userId = prefs.getUserId()
-        Log.d("Generate", "userId = $userId")
         if (userId == null) {
-            showError("Сначала войдите в аккаунт")
+            Toast.makeText(this, "Сначала войдите в аккаунт", Toast.LENGTH_SHORT).show()
+            finish()
             return
         }
 
-        ApiClient.apiService.generate(GenerateRequest(goal))
+        ApiClient.apiService.generate(userId, GenerateRequest(goal))
             .enqueue(object : Callback<GenerateResponse> {
                 override fun onResponse(
                     call: Call<GenerateResponse>,
@@ -99,8 +85,8 @@ class Generate : AppCompatActivity() {
                             showError("Пустой ответ от сервера")
                         }
                     } else {
-                        val errorMsg = response.errorBody()?.string()
-                            ?.let { parseError(it) } ?: "Ошибка генерации"
+                        val errorMsg = response.errorBody()?.string()?.let { parseError(it) }
+                            ?: "Ошибка генерации"
                         showError(errorMsg)
                     }
                 }
@@ -116,7 +102,20 @@ class Generate : AppCompatActivity() {
         isApiResponded = true
 
         accelerateInnerCircleRotation()
-        proceedToNextScreen(planData)
+
+        val intent = Intent(this, CheckPlan::class.java)
+        intent.putExtra("goal", goal)
+        intent.putExtra("title", planData.title)
+        intent.putExtra("description", planData.description)
+        intent.putExtra("targetDate", planData.targetDate)
+
+        val gson = Gson()
+        val stepsJson = gson.toJson(planData.steps)
+        intent.putExtra("stepsJson", stepsJson)
+
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+        finish()
     }
 
     private fun showError(message: String) {
@@ -152,29 +151,5 @@ class Generate : AppCompatActivity() {
             interpolator = LinearInterpolator()
         }
         fastRotate.start()
-    }
-
-    // ========== ПЕРЕХОД ==========
-
-    private fun proceedToNextScreen(planData: GenerateResponse) {
-        val intent = Intent(this, CheckPlan::class.java)
-        intent.putExtra("goal", goal)
-        intent.putExtra("title", planData.title)
-        intent.putExtra("description", planData.description)
-        intent.putExtra("targetDate", planData.targetDate)
-
-        val gson = com.google.gson.Gson()
-        val stepsJson = gson.toJson(planData.steps)
-        intent.putExtra("stepsJson", stepsJson)
-
-        startActivity(intent)
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-        finish()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // Отменяем анимацию, чтобы не было утечек
-        logoInnerCircle.animate().cancel()
     }
 }

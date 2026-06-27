@@ -22,9 +22,6 @@ interface ApiService {
     fun deleteMe(@Header("X-User-Id") userId: Long): Call<Map<String, String>>
 
     @POST("api/plans/generate")
-    fun generate(@Body request: GenerateRequest): Call<GenerateResponse>
-
-    @POST("api/plans/generate")
     fun generate(
         @Header("X-User-Id") userId: Long,
         @Body request: GenerateRequest
