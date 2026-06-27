@@ -15,8 +15,9 @@
         android:theme="@style/Theme.Planova"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".setting"
-            android:exported="false" />
+            android:name=".SettingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <!-- Все экраны в портретной ориентации -->
         <activity
             android:name=".CheckPlan"
@@ -45,7 +46,7 @@
         <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false"
-            android:screenOrientation="portrait" /> <!-- Home – LAUNCHER и портрет -->
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Home"
             android:exported="false"

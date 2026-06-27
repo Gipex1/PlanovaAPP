@@ -1,11 +1,11 @@
 <resources>
 
     <!-- APP -->
-    <string name="app_name">Planova</string>
+    <string name="app_name" translatable="false">Planova</string>
 
     <!-- LOGIN -->
     <string name="welcome">Добро пожаловать!</string>
-    <string name="login_subtitle">Войди в свой аккаунт,\nчтобы продолжить</string>
+    <string name="login_subtitle">Войди в свой аккаунт, чтобы продолжить</string>
 
     <string name="email">Email</string>
     <string name="password">Пароль</string>
@@ -45,14 +45,12 @@
     <string name="category">Категория</string>
     <string name="goal">Цель</string>
     <string name="difficulty">Сложность</string>
-    <string name="time_per_day">Время в день</string>
+    <string name="time_per_day">Сложность</string>
     <string name="generate_plan">Сгенерировать план</string>
 
     <!-- GENERATING -->
     <string name="generating_title">Создание плана...</string>
-    <string name="generating_subtitle">
-        Искусственный интеллект создаёт ваш персональный план
-    </string>
+    <string name="generating_subtitle">"         Искусственный интеллект создаёт ваш персональный план     "</string>
 
     <!-- RESULT -->
     <string name="ai_advice">Совет AI</string>
@@ -86,6 +84,55 @@
     <string name="resetPlan">Преределать</string>
     <string name="editPlan">Изменить</string>
     <string name="deletePlan">Удалить</string>
-    <string name="nick_name">nick name</string>
+    <string name="nick_name" translatable="false">nick name</string>
+    <string name="zagSetting">Настройки</string>
+    <string name="languageSetting">Язык</string>
+    <string name="russian">Русский</string>
+    <string name="nofit">Уведомления</string>
+    <string name="there">Тема</string>
+    <string name="data_reset">Сброс данных</string>
+    <string name="info">Информация</string>
+    <string name="Login_Confirmation">Подтверждение входа</string>
+    <string name="email_example_mail_com">Мы отправили код подтверждения на email example@mail.com</string>
+    <string name="_00_45">Код отправлен повторно через 00:45</string>
+    <string name="next">Подтвердить</string>
+    <string name="no_give_code">Не получили код?</string>
+    <string name="edit_Plan">Редактируем план</string>
+    <string name="name_plan">Название плана</string>
+    <string name="edit_title">Введите название</string>
+    <string name="descripton">Описание</string>
+    <string name="Short_description">Краткое описание</string>
+    <string name="step_plan">Шаги плана</string>
+    <string name="add_step">+ Добавить шаг</string>
+    <string name="save">Сохранить изменения</string>
+    <string name="generatePlan">Генерируем план...</string>
+    <string name="ai">AI анализирует твою цель и создает персональный план</string>
+    <string name="TheAIisthinking">AI думает...</string>
+    <string name="Cancel">Отменить</string>
+    <string name="namePlanGL">Название плана</string>
+    <string name="categoryGL">Категория</string>
+    <string name="progres">Прогресс</string>
+    <string name="_60" translatable="false">60%</string>
+    <string name="_0_7">день 0 из 7</string>
+    <string name="Plan">План</string>
+    <string name="openPlan">Открыть план</string>
+    <string name="makePlan">Создай план для своей цели</string>
+    <string name="aiHelping">Ai поможет тебе достичь большего</string>
+    <string name="generatePlanH">Сгенерировать план</string>
+    <string name="youCel">Какая у тебя цель?</string>
+    <string name="python">Например: Выучить Python</string>
+    <string name="my_purpose">Мои цели</string>
+    <string name="plus" translatable="false">+</string>
+    <string name="actives">Активные</string>
+    <string name="unactives">Завершенные</string>
+    <string name="profil">Профиль</string>
+    <string name="name">Алексей</string>
+    <string name="emailU" translatable="false">grom****@gmail.com</string>
+    <string name="_12" translatable="false">12</string>
+    <string name="plans">Планов</string>
+    <string name="_8" translatable="false">8</string>
+    <string name="done">Выполнено</string>
+    <string name="Overall_progress">Общий прогресс</string>
+    <string name="_65" translatable="false">65%</string>
 
 </resources>

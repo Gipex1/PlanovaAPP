@@ -36,7 +36,7 @@ class Activity_User : AppCompatActivity() {
 
         var setting = findViewById<ImageView>(R.id.ivSettings)
         setting.setOnClickListener {
-            Toast.makeText(this, "Еще в разработке", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, SettingActivity::class.java))
         }
 
         var editProf = findViewById<ImageView>(R.id.ivEditProfile)

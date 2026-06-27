@@ -66,7 +66,7 @@ class Home : AppCompatActivity() {
 
         var setting = findViewById<ImageView>(R.id.ivSettings)
         setting.setOnClickListener {
-            Toast.makeText(this, "Еще в разработке", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this@Home, SettingActivity::class.java))
         }
 
     }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0F1817"
-    tools:context=".setting">
+    tools:context=".SettingActivity">
 
     <!-- Кнопка "Назад" -->
     <ImageView
@@ -15,6 +15,10 @@
         android:layout_height="60dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_left_arrow"
@@ -25,31 +29,33 @@
         android:id="@+id/titleGenerating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Настройки"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="60dp"
+        android:text="@string/zagSetting"
+        android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="25sp"
-        android:textAlignment="center"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="60dp"
-        android:layout_marginStart="80dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Пункт 1: Язык -->
     <LinearLayout
-        android:id="@+id/llSave1"
+        android:id="@+id/llLanguage"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="150dp"
+        android:background="@drawable/button_background"
+        android:clickable="true"
         android:elevation="4dp"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -58,319 +64,326 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:alpha="0.9"
                 android:src="@drawable/ic_language"
-                app:tint="@color/white"
-                android:layout_marginStart="16dp"
-                android:alpha="0.9"/>
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Язык"
+                android:layout_marginStart="16dp"
+                android:letterSpacing="0.02"
+                android:text="@string/languageSetting"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="normal"
-                android:layout_marginStart="16dp"
-                android:letterSpacing="0.02"/>
+                android:textStyle="normal" />
         </LinearLayout>
 
         <!-- Правая часть -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
-            android:layout_marginEnd="8dp">
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tvLanguage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Русский"
-                android:textSize="16sp"
-                android:textColor="@color/white"
+                android:layout_marginEnd="12dp"
                 android:alpha="0.8"
-                android:layout_marginEnd="12dp"/>
+                android:text="@string/russian"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_str"
-                android:tint="@color/white"
-                android:rotation="270"
+                android:layout_marginEnd="12dp"
                 android:alpha="0.7"
-                android:layout_marginEnd="12dp"/>
+                android:rotation="270"
+                android:src="@drawable/ic_str"
+                app:tint="@color/white" />
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- Пункт 2: Уведомления -->
     <LinearLayout
-        android:id="@+id/llSave2"
+        android:id="@+id/llNotifications"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/button_background"
+        android:clickable="true"
         android:elevation="4dp"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llSave1">
+        app:layout_constraintTop_toBottomOf="@+id/llLanguage">
 
         <!-- Левая часть -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:alpha="0.9"
                 android:src="@drawable/ic_nof"
-                app:tint="@color/white"
-                android:layout_marginStart="16dp"
-                android:alpha="0.9"/>
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Уведомления"
+                android:layout_marginStart="16dp"
+                android:letterSpacing="0.02"
+                android:text="@string/nofit"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="normal"
-                android:layout_marginStart="16dp"
-                android:letterSpacing="0.02"/>
+                android:textStyle="normal" />
         </LinearLayout>
 
         <!-- Правая часть -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
-            android:layout_marginEnd="8dp">
+            android:orientation="horizontal">
 
             <Switch
+                android:id="@+id/switchNotifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:thumb="@drawable/switch_thumb"
-                android:track="@drawable/switch_track"
-                android:thumbTextPadding="0dp"
-                android:switchMinWidth="56dp"
+                android:layout_marginEnd="12dp"
                 android:padding="0dp"
-                android:layout_marginEnd="12dp"/>
+                android:switchMinWidth="56dp"
+                android:thumb="@drawable/switch_thumb"
+                android:thumbTextPadding="0dp"
+                android:track="@drawable/switch_track" />
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- Пункт 3: Тема -->
     <LinearLayout
-        android:id="@+id/llSave3"
+        android:id="@+id/llTheme"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/button_background"
+        android:clickable="true"
         android:elevation="4dp"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llSave2">
+        app:layout_constraintTop_toBottomOf="@+id/llNotifications">
 
         <!-- Левая часть -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:alpha="0.9"
                 android:src="@drawable/ic_night"
-                app:tint="@color/white"
-                android:layout_marginStart="16dp"
-                android:alpha="0.9"/>
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Тема"
+                android:layout_marginStart="16dp"
+                android:letterSpacing="0.02"
+                android:text="@string/there"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="normal"
-                android:layout_marginStart="16dp"
-                android:letterSpacing="0.02"/>
+                android:textStyle="normal" />
         </LinearLayout>
 
         <!-- Правая часть -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
-            android:layout_marginEnd="8dp">
+            android:orientation="horizontal">
 
             <Switch
+                android:id="@+id/switchTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:thumb="@drawable/switch_thumb"
-                android:track="@drawable/switch_track"
-                android:thumbTextPadding="0dp"
-                android:switchMinWidth="56dp"
+                android:layout_marginEnd="12dp"
                 android:padding="0dp"
-                android:layout_marginEnd="12dp"/>
+                android:switchMinWidth="56dp"
+                android:thumb="@drawable/switch_thumb"
+                android:thumbTextPadding="0dp"
+                android:track="@drawable/switch_track" />
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- Пункт 4: Сброс данных -->
     <LinearLayout
-        android:id="@+id/llSave4"
+        android:id="@+id/llReset"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/button_background"
+        android:clickable="true"
         android:elevation="4dp"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llSave3">
+        app:layout_constraintTop_toBottomOf="@+id/llTheme">
 
         <!-- Левая часть -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:alpha="0.9"
                 android:src="@drawable/ic_reset"
-                app:tint="@color/white"
-                android:layout_marginStart="16dp"
-                android:alpha="0.9"/>
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Сброс данных"
+                android:layout_marginStart="16dp"
+                android:letterSpacing="0.02"
+                android:text="@string/data_reset"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="normal"
-                android:layout_marginStart="16dp"
-                android:letterSpacing="0.02"/>
+                android:textStyle="normal" />
         </LinearLayout>
 
         <!-- Правая часть -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
-            android:layout_marginEnd="8dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_str"
-                android:tint="@color/white"
-                android:rotation="270"
+                android:layout_marginEnd="12dp"
                 android:alpha="0.7"
-                android:layout_marginEnd="12dp"/>
+                android:rotation="270"
+                android:src="@drawable/ic_str"
+                app:tint="@color/white" />
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- Пункт 5: Информация -->
     <LinearLayout
-        android:id="@+id/llSave5"
+        android:id="@+id/llInfo"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/button_background"
+        android:clickable="true"
         android:elevation="4dp"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llSave4">
+        app:layout_constraintTop_toBottomOf="@+id/llReset">
 
         <!-- Левая часть -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/ic_info"
-                app:tint="@color/white"
                 android:layout_marginStart="16dp"
-                android:alpha="0.9"/>
+                android:alpha="0.9"
+                android:src="@drawable/ic_info"
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Информация"
+                android:layout_marginStart="16dp"
+                android:letterSpacing="0.02"
+                android:text="@string/info"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="normal"
-                android:layout_marginStart="16dp"
-                android:letterSpacing="0.02"/>
+                android:textStyle="normal" />
         </LinearLayout>
 
         <!-- Правая часть -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
-            android:layout_marginEnd="8dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_str"
-                android:tint="@color/white"
-                android:rotation="270"
+                android:layout_marginEnd="12dp"
                 android:alpha="0.7"
-                android:layout_marginEnd="12dp"/>
+                android:rotation="270"
+                android:src="@drawable/ic_str"
+                app:tint="@color/white" />
         </LinearLayout>
 
     </LinearLayout>
@@ -379,63 +392,73 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:background="@drawable/line_top"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/menu_home"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:src="@drawable/ic_home"
+            android:layout_height="32dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
             android:focusable="true"
-            app:tint="@color/white"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_home"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/menu_book"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/menu_book" />
+            app:tint="@color/white" />
 
         <ImageView
             android:id="@+id/menu_book"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:src="@drawable/ic_book"
+            android:layout_height="32dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
             android:focusable="true"
-            app:tint="@color/white"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_book"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/menu_history"
             app:layout_constraintStart_toEndOf="@+id/menu_home"
-            app:layout_constraintEnd_toStartOf="@+id/menu_history" />
+            app:tint="@color/white" />
 
         <ImageView
             android:id="@+id/menu_history"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:src="@drawable/ic_history"
+            android:layout_height="32dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
             android:focusable="true"
-            app:tint="@color/white"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_history"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/menu_profile"
             app:layout_constraintStart_toEndOf="@+id/menu_book"
-            app:layout_constraintEnd_toStartOf="@+id/menu_profile" />
+            app:tint="@color/white" />
 
         <ImageView
             android:id="@+id/menu_profile"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:src="@drawable/ic_user"
+            android:layout_height="32dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
             android:focusable="true"
-            app:tint="@color/white"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_user"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/menu_history"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

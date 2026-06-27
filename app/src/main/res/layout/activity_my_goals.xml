@@ -13,7 +13,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Мои цели"
+        android:text="@string/my_purpose"
         android:textSize="25sp"
         android:textColor="@color/white"
         android:layout_marginTop="50dp"
@@ -36,7 +36,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+"
+            android:text="@string/plus"
             android:textSize="35sp"
             android:textColor="@color/neon_green" />
     </LinearLayout>
@@ -46,7 +46,7 @@
         android:id="@+id/tvActive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Активные"
+        android:text="@string/actives"
         android:textColor="@color/neon_green"
         android:textSize="20sp"
         android:layout_marginTop="150dp"
@@ -59,7 +59,7 @@
         android:id="@+id/tvCompleted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Завершенные"
+        android:text="@string/unactives"
         android:textColor="@color/dark_text_secondary"
         android:textSize="20sp"
         android:layout_marginTop="150dp"
