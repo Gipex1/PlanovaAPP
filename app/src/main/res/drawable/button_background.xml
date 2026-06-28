@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <!-- Сплошная заливка цветом (центр первого градиента) -->
-    <solid android:color="#040C0B" />
-    <!-- Обводка как у первой -->
-    <stroke
-        android:width="2dp"
-        android:color="#10291F" />
-    <!-- Закругление углов (можно 12dp для меньшей карточки) -->
-    <corners android:radius="12dp" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Тёмная тема -->
+    <item android:state_checked="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/dark_card" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/green_border" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+
+    <!-- Светлая тема -->
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/light_card" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/light_border" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+</selector>

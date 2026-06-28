@@ -10,13 +10,12 @@ import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
-class SettingActivity : AppCompatActivity() {
+class SettingActivity : BaseActivity() {
 
     private var backArrow: ImageView? = null
     private var llLanguage: LinearLayout? = null
@@ -54,7 +53,6 @@ class SettingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        applyTheme()
         setContentView(R.layout.activity_setting)
 
         initViews()
@@ -114,14 +112,23 @@ class SettingActivity : AppCompatActivity() {
 
         switchTheme?.setOnCheckedChangeListener { _, isChecked ->
             sharedPref?.edit()?.putBoolean(KEY_THEME, isChecked)?.apply()
-            applyTheme()
+
+            // Применяем тему
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+
             Toast.makeText(
                 this,
                 if (isChecked) getString(R.string.dark_theme_enabled)
                 else getString(R.string.dark_theme_disabled),
                 Toast.LENGTH_SHORT
             ).show()
+
             switchTheme?.let { animateSwitch(it) }
+            restartApp()
         }
 
         llReset?.setOnClickListener {
@@ -147,25 +154,16 @@ class SettingActivity : AppCompatActivity() {
             .setSingleChoiceItems(languages, selectedIndex) { dialog, which ->
                 val selectedLangCode = langCodes[which]
 
-                // Сохраняем
                 sharedPref?.edit()?.putString(KEY_LANGUAGE, selectedLangCode)?.apply()
-
-                // Применяем язык в текущей Activity
                 setLocale(selectedLangCode)
-
-                // ВАЖНО: Обновляем TextView с названием языка
                 tvLanguage?.text = languages[which]
-
-                // Перезапускаем ВСЮ Activity через Intent
                 restartApp()
-
                 dialog.dismiss()
             }
             .setNegativeButton("Отмена", null)
             .show()
     }
 
-    // НОВЫЙ МЕТОД: перезапуск всего приложения
     private fun restartApp() {
         val intent = packageManager.getLaunchIntentForPackage(packageName)
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -175,7 +173,6 @@ class SettingActivity : AppCompatActivity() {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
-    // НОВЫЙ МЕТОД: закрыть с анимацией
     private fun finishWithAnimation() {
         finish()
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -221,16 +218,6 @@ class SettingActivity : AppCompatActivity() {
             .setIcon(android.R.drawable.ic_dialog_info)
             .setPositiveButton(getString(R.string.close), null)
             .show()
-    }
-
-    private fun applyTheme() {
-        val prefs = sharedPref
-        val darkTheme = prefs?.getBoolean(KEY_THEME, false) ?: false
-
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkTheme) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
     }
 
     private fun animateSwitch(switch: Switch) {

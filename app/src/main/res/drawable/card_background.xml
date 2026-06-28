@@ -1,19 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <!-- Заливка градиентом -->
-    <gradient
-        android:type="radial"
-        android:centerX="50%"
-        android:centerY="50%"
-        android:gradientRadius="100%"
-        android:startColor="#040C0B"
-        android:endColor="#10291F"
-        android:centerColor="#040C0B" />
-    <!-- Обводка (граница) -->
-    <stroke
-        android:width="2dp"
-        android:color="#10291F" />
-    <!-- Закругление углов -->
-    <corners android:radius="16dp" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Тёмная тема -->
+    <item android:state_checked="false">
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:centerX="50%"
+                android:centerY="50%"
+                android:gradientRadius="100%"
+                android:startColor="@color/dark_background"
+                android:endColor="@color/green_border"
+                android:centerColor="@color/dark_background" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/green_border" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+    <!-- Светлая тема -->
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:centerX="50%"
+                android:centerY="50%"
+                android:gradientRadius="100%"
+                android:startColor="@color/light_background"
+                android:endColor="@color/neon_green"
+                android:centerColor="@color/light_background" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/neon_green" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+</selector>

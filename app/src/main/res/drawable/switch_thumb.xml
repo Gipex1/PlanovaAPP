@@ -1,13 +1,10 @@
-<!-- res/drawable/switch_thumb_gradient.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="true">
         <layer-list>
             <item>
                 <shape android:shape="oval">
-                    <gradient
-                        android:startColor="#4A6FA5"
-                        android:endColor="#3D5A80"
-                        android:angle="135"/>
+                    <solid android:color="?attr/colorPrimary"/>
                     <size android:width="24dp" android:height="24dp"/>
                 </shape>
             </item>
@@ -21,11 +18,11 @@
     </item>
     <item>
         <shape android:shape="oval">
-            <solid android:color="#FFFFFF"/>
+            <solid android:color="?attr/colorSurface"/>
             <size android:width="24dp" android:height="24dp"/>
             <stroke
                 android:width="1.5dp"
-                android:color="#60FFFFFF"/>
+                android:color="?attr/colorPrimaryVariant"/>
         </shape>
     </item>
 </selector>

@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Белая полоска сверху -->
-    <item android:gravity="top">
-        <shape>
-            <solid android:color="@color/green_black_card" />
-            <size android:height="2dp" /> <!-- толщина полоски -->
-        </shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Тёмная тема -->
+    <item android:state_checked="false">
+        <layer-list>
+            <item android:gravity="top">
+                <shape>
+                    <solid android:color="@color/green_black_card"/>
+                    <size android:height="2dp"/>
+                </shape>
+            </item>
+        </layer-list>
     </item>
-</layer-list>
+
+    <!-- Светлая тема -->
+    <item android:state_checked="true">
+        <layer-list>
+            <item android:gravity="top">
+                <shape>
+                    <solid android:color="@color/light_border"/>
+                    <size android:height="2dp"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+</selector>
