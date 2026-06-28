@@ -23,7 +23,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class Generate : AppCompatActivity() {
+class Generate : BaseActivity() {
 
     private lateinit var logoInnerCircle: ImageView
     private lateinit var cancelButton: MaterialButton

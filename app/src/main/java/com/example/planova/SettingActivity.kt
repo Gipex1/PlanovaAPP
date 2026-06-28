@@ -1,7 +1,9 @@
 package com.example.planova
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -12,10 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.*
 
 class SettingActivity : AppCompatActivity() {
 
-    // UI элементы - делаем nullable вместо lateinit
     private var backArrow: ImageView? = null
     private var llLanguage: LinearLayout? = null
     private var llNotifications: LinearLayout? = null
@@ -25,8 +27,6 @@ class SettingActivity : AppCompatActivity() {
     private var switchNotifications: Switch? = null
     private var switchTheme: Switch? = null
     private var tvLanguage: TextView? = null
-
-    // SharedPreferences - делаем nullable
     private var sharedPref: SharedPreferences? = null
 
     companion object {
@@ -36,15 +36,25 @@ class SettingActivity : AppCompatActivity() {
         private const val KEY_LANGUAGE = "language"
     }
 
+    override fun attachBaseContext(newBase: Context) {
+        val prefs = newBase.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val langCode = prefs.getString(KEY_LANGUAGE, "ru") ?: "ru"
+
+        val locale = Locale(langCode)
+        Locale.setDefault(locale)
+
+        val config = Configuration(newBase.resources.configuration)
+        config.setLocale(locale)
+
+        val context = newBase.createConfigurationContext(config)
+        super.attachBaseContext(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Инициализируем SharedPreferences сразу
         sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
-        // Применяем тему
         applyTheme()
-
         setContentView(R.layout.activity_setting)
 
         initViews()
@@ -69,13 +79,21 @@ class SettingActivity : AppCompatActivity() {
         val prefs = sharedPref ?: return
         switchNotifications?.isChecked = prefs.getBoolean(KEY_NOTIFICATIONS, true)
         switchTheme?.isChecked = prefs.getBoolean(KEY_THEME, false)
-        tvLanguage?.text = prefs.getString(KEY_LANGUAGE, "Русский")
+
+        val currentLang = prefs.getString(KEY_LANGUAGE, "ru") ?: "ru"
+        tvLanguage?.text = when (currentLang) {
+            "en" -> "English"
+            "kk" -> "Қазақша"
+            "de" -> "Deutsch"
+            "fr" -> "Français"
+            else -> "Русский"
+        }
     }
 
     private fun setupClickListeners() {
         backArrow?.setOnClickListener {
             animateClick(it)
-            finish()
+            finishWithAnimation()
         }
 
         llLanguage?.setOnClickListener {
@@ -85,14 +103,24 @@ class SettingActivity : AppCompatActivity() {
 
         switchNotifications?.setOnCheckedChangeListener { _, isChecked ->
             sharedPref?.edit()?.putBoolean(KEY_NOTIFICATIONS, isChecked)?.apply()
-            Toast.makeText(this, if (isChecked) "Уведомления включены" else "Уведомления выключены", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                if (isChecked) getString(R.string.notifications_enabled)
+                else getString(R.string.notifications_disabled),
+                Toast.LENGTH_SHORT
+            ).show()
             switchNotifications?.let { animateSwitch(it) }
         }
 
         switchTheme?.setOnCheckedChangeListener { _, isChecked ->
             sharedPref?.edit()?.putBoolean(KEY_THEME, isChecked)?.apply()
             applyTheme()
-            Toast.makeText(this, if (isChecked) "Тёмная тема включена" else "Светлая тема включена", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                if (isChecked) getString(R.string.dark_theme_enabled)
+                else getString(R.string.dark_theme_disabled),
+                Toast.LENGTH_SHORT
+            ).show()
             switchTheme?.let { animateSwitch(it) }
         }
 
@@ -109,63 +137,95 @@ class SettingActivity : AppCompatActivity() {
 
     private fun showLanguageDialog() {
         val languages = arrayOf("Русский", "English", "Қазақша", "Deutsch", "Français")
-        val currentLanguage = tvLanguage?.text?.toString() ?: "Русский"
-        var selectedIndex = languages.indexOf(currentLanguage)
+        val langCodes = arrayOf("ru", "en", "kk", "de", "fr")
+        val currentLang = sharedPref?.getString(KEY_LANGUAGE, "ru") ?: "ru"
+        var selectedIndex = langCodes.indexOf(currentLang)
         if (selectedIndex == -1) selectedIndex = 0
 
         MaterialAlertDialogBuilder(this)
             .setTitle("Выберите язык")
             .setSingleChoiceItems(languages, selectedIndex) { dialog, which ->
-                val selectedLanguage = languages[which]
-                tvLanguage?.text = selectedLanguage
-                sharedPref?.edit()?.putString(KEY_LANGUAGE, selectedLanguage)?.apply()
-                Toast.makeText(this, "Язык: $selectedLanguage", Toast.LENGTH_SHORT).show()
+                val selectedLangCode = langCodes[which]
+
+                // Сохраняем
+                sharedPref?.edit()?.putString(KEY_LANGUAGE, selectedLangCode)?.apply()
+
+                // Применяем язык в текущей Activity
+                setLocale(selectedLangCode)
+
+                // ВАЖНО: Обновляем TextView с названием языка
+                tvLanguage?.text = languages[which]
+
+                // Перезапускаем ВСЮ Activity через Intent
+                restartApp()
+
                 dialog.dismiss()
             }
             .setNegativeButton("Отмена", null)
             .show()
     }
 
+    // НОВЫЙ МЕТОД: перезапуск всего приложения
+    private fun restartApp() {
+        val intent = packageManager.getLaunchIntentForPackage(packageName)
+        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
+
+    // НОВЫЙ МЕТОД: закрыть с анимацией
+    private fun finishWithAnimation() {
+        finish()
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
+
+    private fun setLocale(langCode: String) {
+        val locale = Locale(langCode)
+        Locale.setDefault(locale)
+
+        val config = Configuration(resources.configuration)
+        config.setLocale(locale)
+
+        resources.updateConfiguration(config, resources.displayMetrics)
+    }
+
     private fun showResetDialog() {
         MaterialAlertDialogBuilder(this)
-            .setTitle("Сброс данных")
-            .setMessage("Вы уверены, что хотите сбросить все данные? Это действие необратимо.")
+            .setTitle(getString(R.string.reset_title))
+            .setMessage(getString(R.string.reset_message))
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setPositiveButton("Сбросить") { _, _ ->
+            .setPositiveButton(getString(R.string.reset)) { _, _ ->
                 sharedPref?.edit()?.clear()?.apply()
                 switchNotifications?.isChecked = true
                 switchTheme?.isChecked = false
-                tvLanguage?.text = "Русский"
-                Toast.makeText(this, "Все данные сброшены", Toast.LENGTH_LONG).show()
-                recreate()
+                Toast.makeText(this, getString(R.string.data_reset), Toast.LENGTH_LONG).show()
+                restartApp()
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
     private fun showInfoDialog() {
         MaterialAlertDialogBuilder(this)
-            .setTitle("Информация")
+            .setTitle(getString(R.string.info))
             .setMessage("""
-                Приложение v1.0.0
+                ${getString(R.string.app_name)} v1.0.0
                 
-                Разработчик: Your Name
+                ${getString(R.string.developer)}: Your Name
                 Email: your@email.com
                 
-                © 2024 Все права защищены
+                © 2024 ${getString(R.string.all_rights)}
             """.trimIndent())
             .setIcon(android.R.drawable.ic_dialog_info)
-            .setPositiveButton("Закрыть", null)
+            .setPositiveButton(getString(R.string.close), null)
             .show()
     }
 
     private fun applyTheme() {
         val prefs = sharedPref
-        val darkTheme = if (prefs != null) {
-            prefs.getBoolean(KEY_THEME, false)
-        } else {
-            false
-        }
+        val darkTheme = prefs?.getBoolean(KEY_THEME, false) ?: false
 
         AppCompatDelegate.setDefaultNightMode(
             if (darkTheme) AppCompatDelegate.MODE_NIGHT_YES
@@ -175,6 +235,7 @@ class SettingActivity : AppCompatActivity() {
 
     private fun animateSwitch(switch: Switch) {
         switch.animate()
+            .rotation(360f)
             .setDuration(300)
             .withEndAction { switch.rotation = 0f }
             .start()
@@ -201,46 +262,44 @@ class SettingActivity : AppCompatActivity() {
         val menuHistory = findViewById<ImageView>(R.id.menu_history)
         val menuProfile = findViewById<ImageView>(R.id.menu_profile)
 
-        // Подсвечиваем текущий пункт
         menuProfile?.setColorFilter(ContextCompat.getColor(this, android.R.color.white))
 
         menuHome?.setOnClickListener {
             animateClick(it)
-            Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, Home::class.java))
+            finishWithAnimation()
         }
 
         menuBook?.setOnClickListener {
             animateClick(it)
-            Toast.makeText(this, "Book", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.book), Toast.LENGTH_SHORT).show()
         }
 
         menuHistory?.setOnClickListener {
             animateClick(it)
-            Toast.makeText(this, "History", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.history), Toast.LENGTH_SHORT).show()
         }
 
         menuProfile?.setOnClickListener {
             animateClick(it)
-            Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.profile), Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finishWithAnimation()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean("notifications", switchNotifications?.isChecked ?: false)
         outState.putBoolean("theme", switchTheme?.isChecked ?: false)
-        outState.putString("language", tvLanguage?.text?.toString() ?: "Русский")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         switchNotifications?.isChecked = savedInstanceState.getBoolean("notifications")
         switchTheme?.isChecked = savedInstanceState.getBoolean("theme")
-        tvLanguage?.text = savedInstanceState.getString("language")
     }
 }

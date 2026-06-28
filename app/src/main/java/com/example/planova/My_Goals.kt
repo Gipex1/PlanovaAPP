@@ -20,7 +20,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class My_Goals : AppCompatActivity() {
+class My_Goals : BaseActivity() {
     private lateinit var binding: ActivityMyGoalsBinding
     private lateinit var adapter: PlanAdapter
     private lateinit var prefs: SharedPrefs

@@ -12,7 +12,7 @@ import com.example.planova.adapter.StepProgressAdapter
 import com.example.planova.data.StepProgressItem
 import com.example.planova.databinding.ActivityGoalListBinding
 
-class Goal_List : AppCompatActivity() {
+class Goal_List : BaseActivity() {
 
     private lateinit var binding: ActivityGoalListBinding
     private lateinit var adapter: StepProgressAdapter

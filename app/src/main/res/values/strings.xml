@@ -1,25 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- APP -->
-    <string name="app_name" translatable="false">Planova</string>
+    <string name="app_name">Planova</string>
 
     <!-- LOGIN -->
     <string name="welcome">Добро пожаловать!</string>
     <string name="login_subtitle">Войди в свой аккаунт, чтобы продолжить</string>
-
     <string name="email">Email</string>
     <string name="password">Пароль</string>
-
     <string name="remember_me">Запомнить меня</string>
     <string name="forgot_password">Забыли пароль?</string>
-
     <string name="login">Войти</string>
-
     <string name="or">или</string>
-
     <string name="continue_google">Продолжить с Google</string>
     <string name="continue_apple">Продолжить с Apple</string>
-
     <string name="no_account">Нет аккаунта?</string>
     <string name="register">Зарегистрироваться</string>
 
@@ -32,7 +27,6 @@
     <string name="treb1">Минимум 8 символов</string>
     <string name="treb2">Хотя бы одна заглавная буква</string>
     <string name="treb3">Хотя бы одна цифра</string>
-
 
     <!-- FORGOT PASSWORD -->
     <string name="reset_password">Сброс пароля</string>
@@ -81,10 +75,10 @@
     <string name="descriptonPlan">Описание</string>
     <string name="planForday">План на 7 дней</string>
     <string name="savePlan">Сохранить</string>
-    <string name="resetPlan">Преределать</string>
+    <string name="resetPlan">Переделать</string>
     <string name="editPlan">Изменить</string>
     <string name="deletePlan">Удалить</string>
-    <string name="nick_name" translatable="false">nick name</string>
+    <string name="nick_name">nick name</string>
     <string name="zagSetting">Настройки</string>
     <string name="languageSetting">Язык</string>
     <string name="russian">Русский</string>
@@ -112,7 +106,7 @@
     <string name="namePlanGL">Название плана</string>
     <string name="categoryGL">Категория</string>
     <string name="progres">Прогресс</string>
-    <string name="_60" translatable="false">60%</string>
+    <string name="_60">60%</string>
     <string name="_0_7">день 0 из 7</string>
     <string name="Plan">План</string>
     <string name="openPlan">Открыть план</string>
@@ -122,17 +116,61 @@
     <string name="youCel">Какая у тебя цель?</string>
     <string name="python">Например: Выучить Python</string>
     <string name="my_purpose">Мои цели</string>
-    <string name="plus" translatable="false">+</string>
+    <string name="plus">+</string>
     <string name="actives">Активные</string>
     <string name="unactives">Завершенные</string>
     <string name="profil">Профиль</string>
     <string name="name">Алексей</string>
-    <string name="emailU" translatable="false">grom****@gmail.com</string>
-    <string name="_12" translatable="false">12</string>
+    <string name="emailU">grom****@gmail.com</string>
+    <string name="_12">12</string>
     <string name="plans">Планов</string>
-    <string name="_8" translatable="false">8</string>
+    <string name="_8">8</string>
     <string name="done">Выполнено</string>
     <string name="Overall_progress">Общий прогресс</string>
-    <string name="_65" translatable="false">65%</string>
+    <string name="_65">65%</string>
+
+    <!-- Settings -->
+    <string name="reset_data">Сброс данных</string>
+
+    <!-- Названия языков -->
+    <string name="english">English</string>
+    <string name="kazakh">Қазақша</string>
+    <string name="german">Deutsch</string>
+    <string name="french">Français</string>
+
+    <!-- Диалоги -->
+    <string name="select_language">Выберите язык</string>
+    <string name="cancel">Отмена</string>
+    <string name="reset_title">Сброс данных</string>
+    <string name="reset_message">Вы уверены, что хотите сбросить все данные? Это действие необратимо.</string>
+    <string name="reset">Сбросить</string>
+    <string name="close">Закрыть</string>
+
+    <!-- Уведомления -->
+    <string name="notifications_enabled">Уведомления включены</string>
+    <string name="notifications_disabled">Уведомления выключены</string>
+    <string name="dark_theme_enabled">Тёмная тема включена</string>
+    <string name="dark_theme_disabled">Светлая тема включена</string>
+
+    <!-- Информация -->
+    <string name="developer">Разработчик</string>
+    <string name="all_rights">Все права защищены</string>
+
+    <!-- Нижняя навигация -->
+    <string name="home">Главная</string>
+    <string name="book">Книги</string>
+    <string name="history">История</string>
+
+    <!-- CheckPlan -->
+    <string name="login_first">Сначала войдите</string>
+    <string name="plan_saved">План сохранён!</string>
+    <string name="save_error">Ошибка сохранения</string>
+    <string name="network_error">Ошибка сети</string>
+    <string name="no_goal_to_regenerate">Нечего переделывать: цель не найдена</string>
+    <string name="plan_regenerated">План переделан!</string>
+    <string name="generate_error">Ошибка генерации</string>
+    <string name="plan_not_saved">План ещё не сохранён</string>
+    <string name="plan_deleted">План удалён</string>
+    <string name="delete_error">Ошибка удаления</string>
 
 </resources>

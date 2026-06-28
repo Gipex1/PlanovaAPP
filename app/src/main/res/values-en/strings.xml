@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Planova</string>
     <string name="welcome">Welcome!</string>
     <string name="login_subtitle">Log in to your account to continue</string>
     <string name="email">Email</string>
@@ -40,6 +41,7 @@
     <string name="active">Active</string>
     <string name="completed">Completed</string>
     <string name="delete">Remove</string>
+    <string name="history">History</string>
     <string name="profile">Profile</string>
     <string name="settings">Settings</string>
     <string name="logout">Exit</string>
@@ -57,12 +59,15 @@
     <string name="resetPlan">Distribute</string>
     <string name="editPlan">To change</string>
     <string name="deletePlan">Remove</string>
+    <string name="nick_name">nick name</string>
     <string name="zagSetting">Settings</string>
     <string name="languageSetting">Language</string>
-    <string name="russian">Russian</string>
+    <string name="russian">English</string>
     <string name="nofit">Notifications</string>
     <string name="there">Topic</string>
+    <string name="reset">Throw off</string>
     <string name="data_reset">Data reset</string>
+    <string name="reset_data">Data reset</string>
     <string name="info">Information</string>
     <string name="Login_Confirmation">Login Confirmation</string>
     <string name="email_example_mail_com">We have sent the confirmation code by email example@mail.com</string>
@@ -84,6 +89,7 @@
     <string name="namePlanGL">Plan name</string>
     <string name="categoryGL">Category</string>
     <string name="progres">Progress</string>
+    <string name="_60">60%</string>
     <string name="_0_7">Day 0 of 7</string>
     <string name="Plan">Plan</string>
     <string name="openPlan">Open a plan</string>
@@ -93,11 +99,43 @@
     <string name="youCel">What is your goal?</string>
     <string name="python">For example: Learn Python</string>
     <string name="my_purpose">My goals</string>
+    <string name="plus">+</string>
     <string name="actives">Active</string>
     <string name="unactives">Completed</string>
     <string name="profil">Profile</string>
     <string name="name">Alexey</string>
+    <string name="_12">12</string>
     <string name="plans">Plans</string>
+    <string name="_8">8</string>
     <string name="done">Done</string>
     <string name="Overall_progress">Overall progress</string>
+    <string name="emailU">grom****@gmail.com</string>
+    <string name="_65">65%</string>
+    <string name="english">english</string>
+    <string name="kazakh">kazakh</string>
+    <string name="german">german</string>
+    <string name="french">french</string>
+    <string name="select_language">Select a language</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset_title">Data reset</string>
+    <string name="reset_message">Are you sure you want to reset all the data? This action is irreversible.</string>
+    <string name="close">To close</string>
+    <string name="notifications_enabled">Notifications are enabled</string>
+    <string name="notifications_disabled">Notifications are disabled</string>
+    <string name="dark_theme_enabled">The dark theme is enabled</string>
+    <string name="dark_theme_disabled">The light theme is enabled</string>
+    <string name="developer">Developer</string>
+    <string name="all_rights">All rights reserved</string>
+    <string name="home">Main</string>
+    <string name="book">Books</string>
+    <string name="login_first">Log in first</string>
+    <string name="plan_saved">The plan is saved!</string>
+    <string name="save_error">Saving error</string>
+    <string name="network_error">Network error</string>
+    <string name="no_goal_to_regenerate">There is nothing to redo: the target has not been found</string>
+    <string name="plan_regenerated">The plan has been redone!</string>
+    <string name="generate_error">Generation error</string>
+    <string name="plan_not_saved">The plan has not been saved yet</string>
+    <string name="plan_deleted">The plan has been deleted</string>
+    <string name="delete_error">Deletion error</string>
 </resources>

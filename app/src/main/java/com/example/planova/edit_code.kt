@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 
-class edit_code : AppCompatActivity() {
+class edit_code : BaseActivity() {
 
     private lateinit var codeFields: List<EditText>
     private lateinit var btnConfirm: MaterialButton

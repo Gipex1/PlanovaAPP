@@ -4,9 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.planova"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.planova"
@@ -16,6 +14,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // ДОБАВЬ ЭТО:
+        resConfigs("ru", "en", "kk", "de", "fr")
     }
 
     buildTypes {
@@ -26,6 +27,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+    buildFeatures {
+        viewBinding = true   // <--- ЭТО ДОЛЖНО БЫТЬ!!!
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

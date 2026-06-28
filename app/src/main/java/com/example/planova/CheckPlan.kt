@@ -19,7 +19,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CheckPlan : AppCompatActivity() {
+class CheckPlan : BaseActivity() {
 
     private lateinit var binding: ActivityCheckPlanBinding
     private lateinit var prefs: SharedPrefs
@@ -31,6 +31,12 @@ class CheckPlan : AppCompatActivity() {
     private lateinit var steps: List<StepDto>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Вместо жестких текстов используй:
+        getString(R.string.my_goals)
+        getString(R.string.active)
+        getString(R.string.completed)
+        getString(R.string.delete)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityCheckPlanBinding.inflate(layoutInflater)
@@ -47,8 +53,8 @@ class CheckPlan : AppCompatActivity() {
         // Получаем данные
         planId = intent.getLongExtra("planId", -1)
         goal = intent.getStringExtra("goal") ?: ""
-        title = intent.getStringExtra("title") ?: "Без названия"
-        description = intent.getStringExtra("description") ?: "Описание отсутствует"
+        title = intent.getStringExtra("title") ?: getString(R.string.namePlan)
+        description = intent.getStringExtra("description") ?: getString(R.string.descriptonPlan)
         targetDate = intent.getStringExtra("targetDate") ?: ""
         val stepsJson = intent.getStringExtra("stepsJson") ?: "[]"
 
@@ -100,7 +106,7 @@ class CheckPlan : AppCompatActivity() {
     private fun savePlan(title: String, description: String, targetDate: String, steps: List<StepDto>) {
         val userId = prefs.getUserId()
         if (userId == null) {
-            Toast.makeText(this, "Сначала войдите", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.login_first), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -115,25 +121,25 @@ class CheckPlan : AppCompatActivity() {
                 override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
                     binding.llSave.isEnabled = true
                     if (response.isSuccessful) {
-                        Toast.makeText(this@CheckPlan, "План сохранён!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CheckPlan, getString(R.string.plan_saved), Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@CheckPlan, My_Goals::class.java))
                         finish()
                     } else {
-                        val error = response.errorBody()?.string() ?: "Ошибка сохранения"
+                        val error = response.errorBody()?.string() ?: getString(R.string.save_error)
                         Toast.makeText(this@CheckPlan, error, Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<PlanResponse>, t: Throwable) {
                     binding.llSave.isEnabled = true
-                    Toast.makeText(this@CheckPlan, "Ошибка сети: ${t.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@CheckPlan, getString(R.string.network_error) + ": ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
     }
 
     private fun regeneratePlan() {
         if (goal.isEmpty()) {
-            Toast.makeText(this, "Нечего переделывать: цель не найдена", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_goal_to_regenerate), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -155,32 +161,32 @@ class CheckPlan : AppCompatActivity() {
                             binding.tvPlanDescription.text = description
                             binding.rvSteps.adapter = StepAdapter(steps)
 
-                            Toast.makeText(this@CheckPlan, "План переделан!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@CheckPlan, getString(R.string.plan_regenerated), Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(this@CheckPlan, "Ошибка генерации", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@CheckPlan, getString(R.string.generate_error), Toast.LENGTH_LONG).show()
                         }
                     } else {
-                        val error = response.errorBody()?.string() ?: "Ошибка генерации"
+                        val error = response.errorBody()?.string() ?: getString(R.string.generate_error)
                         Toast.makeText(this@CheckPlan, error, Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<GenerateResponse>, t: Throwable) {
                     binding.llReset.isEnabled = true
-                    Toast.makeText(this@CheckPlan, "Ошибка сети: ${t.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@CheckPlan, getString(R.string.network_error) + ": ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
     }
 
     private fun deletePlan(id: Long) {
         if (id == -1L) {
-            Toast.makeText(this, "План ещё не сохранён", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.plan_not_saved), Toast.LENGTH_SHORT).show()
             return
         }
 
         val userId = prefs.getUserId()
         if (userId == null) {
-            Toast.makeText(this, "Сначала войдите", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.login_first), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -189,17 +195,17 @@ class CheckPlan : AppCompatActivity() {
             .enqueue(object : Callback<Map<String, String>> {
                 override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                     if (response.isSuccessful) {
-                        Toast.makeText(this@CheckPlan, "План удалён", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CheckPlan, getString(R.string.plan_deleted), Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@CheckPlan, My_Goals::class.java))
                         finish()
                     } else {
-                        val error = response.errorBody()?.string() ?: "Ошибка удаления"
+                        val error = response.errorBody()?.string() ?: getString(R.string.delete_error)
                         Toast.makeText(this@CheckPlan, error, Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                    Toast.makeText(this@CheckPlan, "Ошибка сети: ${t.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@CheckPlan, getString(R.string.network_error) + ": ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
     }

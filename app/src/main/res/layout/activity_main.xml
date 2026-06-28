@@ -164,7 +164,7 @@
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:backgroundTint="#00FF9C"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textColor="#0F1817"
         app:layout_constraintTop_toBottomOf="@id/switch1"
         app:layout_constraintStart_toStartOf="parent"
