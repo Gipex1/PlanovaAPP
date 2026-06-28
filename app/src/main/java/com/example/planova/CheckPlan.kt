@@ -77,7 +77,7 @@ class CheckPlan : BaseActivity() {
             savePlan(title, description, targetDate, steps)
         }
 
-        // Переделать
+        // Переделать нажо сделать переход на генерацию
         binding.llReset.setOnClickListener {
             regeneratePlan()
         }
@@ -88,7 +88,7 @@ class CheckPlan : BaseActivity() {
             intent.putExtra("planId", planId)
             intent.putExtra("title", title)
             intent.putExtra("description", description)
-            intent.putExtra("stepsJson", stepsJson)
+            intent.putExtra("stepsJson", Gson().toJson(steps.map { StepDto(it.description, it.sortOrder) }))
             startActivity(intent)
         }
 

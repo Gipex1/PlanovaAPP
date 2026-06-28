@@ -112,21 +112,14 @@ class My_Goals : BaseActivity() {
                 override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
                     if (response.isSuccessful) {
                         val data = response.body()!!
-                        val intent = Intent(this@My_Goals, Goal_List::class.java) // ← сюда
+                        val intent = Intent(this@My_Goals, Goal_List::class.java)
                         intent.putExtra("planId", data.id)
                         intent.putExtra("planTitle", data.title)
                         intent.putExtra("category", data.category ?: "Общее")
                         intent.putExtra("progress", calculateProgress(data.steps))
                         intent.putExtra("totalDays", data.steps.size)
-                        // Передаём шаги для отображения
                         val stepsJson = Gson().toJson(
-                            data.steps.map {
-                                StepProgressItem(
-                                    it.sortOrder,
-                                    it.description,
-                                    it.isCompleted
-                                )
-                            }
+                            data.steps.map { StepProgressItem(it.sortOrder, it.description, it.isCompleted) }
                         )
                         intent.putExtra("stepsJson", stepsJson)
                         startActivity(intent)

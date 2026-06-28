@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.planova.adapter.EditStepAdapter
 import com.example.planova.data.PlanResponse
 import com.example.planova.data.StepDto
+import com.example.planova.data.StepRequest
 import com.example.planova.data.UpdatePlanRequest
 import com.example.planova.databinding.ActivityEditGoalBinding
 import com.example.planova.network.ApiClient
@@ -116,20 +117,16 @@ class Edit_Goal : BaseActivity() {
             return
         }
 
-        // Собираем обновлённые шаги
         val updatedSteps = steps.mapIndexed { index, step ->
             StepDto(step.description, index + 1)
         }
 
-        // Формируем запрос
         val request = UpdatePlanRequest(
             title = title,
             description = binding.etPlanDescription.text.toString().trim(),
-            status = null, // не меняем
-            targetDate = null, // не меняем (или можно добавить поле)
-            steps = updatedSteps.map {
-                com.example.planova.data.StepRequest(it.description, it.sortOrder)
-            }
+            status = null,
+            targetDate = null,
+            steps = updatedSteps.map { StepRequest(it.description, it.sortOrder) }
         )
 
         binding.btnSave.isEnabled = false
@@ -142,7 +139,6 @@ class Edit_Goal : BaseActivity() {
                     binding.btnSave.text = "Сохранить изменения"
                     if (response.isSuccessful) {
                         Toast.makeText(this@Edit_Goal, "План обновлён", Toast.LENGTH_SHORT).show()
-                        // Вернуться к списку
                         startActivity(Intent(this@Edit_Goal, My_Goals::class.java))
                         finish()
                     } else {

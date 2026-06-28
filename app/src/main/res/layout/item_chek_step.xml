@@ -27,13 +27,12 @@
         android:textColor="@color/white" />
 
     <ImageView
-        android:id="@+id/ivHelp"
+        android:id="@+id/ivStatus"
         android:layout_width="25dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/help4"
+        android:layout_height="25dp"
+        android:src="@drawable/icc_error"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="15dp"
-        app:tint="@color/dark_text_secondary"
         android:contentDescription="Помощь" />
 
 </LinearLayout>
