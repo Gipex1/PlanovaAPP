@@ -259,17 +259,17 @@ class SettingActivity : BaseActivity() {
 
         menuBook?.setOnClickListener {
             animateClick(it)
-            Toast.makeText(this, getString(R.string.book), Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, My_Goals::class.java))
         }
 
         menuHistory?.setOnClickListener {
             animateClick(it)
-            Toast.makeText(this, getString(R.string.history), Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, My_Goals_Complat::class.java))
         }
 
         menuProfile?.setOnClickListener {
             animateClick(it)
-            Toast.makeText(this, getString(R.string.profile), Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, Activity_User::class.java))
         }
     }
 
