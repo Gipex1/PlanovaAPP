@@ -174,14 +174,23 @@ class CheckPlan : BaseActivity() {
     }
 
     private fun regeneratePlan() {
-        if (goal.isEmpty()) {
+        // Используем исходную цель, если она есть, иначе берём title без префикса "План: "
+        val userGoal = if (goal.isNotEmpty()) {
+            goal
+        } else {
+            // Убираем префикс "План: " если есть
+            val prefix = "План: "
+            if (title.startsWith(prefix)) title.substring(prefix.length) else title
+        }
+
+        if (userGoal.isEmpty()) {
             Toast.makeText(this, getString(R.string.no_goal_to_regenerate), Toast.LENGTH_SHORT).show()
             return
         }
 
         binding.llReset.isEnabled = false
 
-        ApiClient.apiService.generate(prefs.getUserId()!!, GenerateRequest(goal))
+        ApiClient.apiService.generate(prefs.getUserId()!!, GenerateRequest(userGoal))
             .enqueue(object : Callback<GenerateResponse> {
                 override fun onResponse(call: Call<GenerateResponse>, response: Response<GenerateResponse>) {
                     binding.llReset.isEnabled = true

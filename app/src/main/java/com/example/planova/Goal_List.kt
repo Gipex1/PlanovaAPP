@@ -15,6 +15,7 @@ import com.example.planova.databinding.ActivityGoalListBinding
 import com.example.planova.network.ApiClient
 import com.example.planova.utils.SharedPrefs
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,7 +54,30 @@ class Goal_List : AppCompatActivity() {
         binding.titleGenerating.text = planTitle
         binding.titleCategory.text = intent.getStringExtra("category") ?: "Общее"
 
+        // Инициализируем steps из Intent, если план новый
         steps = mutableListOf()
+        if (planId == -1L) {
+            // Для нового плана берём шаги из Intent (ключ "stepsJson" или "stepsDtoJson")
+            val stepsJson = intent.getStringExtra("stepsJson") ?: "[]"
+            val type = object : TypeToken<List<StepDto>>() {}.type
+            val stepDtos: List<StepDto> = try {
+                Gson().fromJson(stepsJson, type)
+            } catch (e: Exception) {
+                emptyList()
+            }
+            steps = stepDtos.mapIndexed { index, stepDto ->
+                StepProgressItem(
+                    id = -1L, // временный id
+                    day = stepDto.sortOrder,
+                    description = stepDto.description,
+                    isCompleted = false
+                )
+            }.sortedBy { it.day }.toMutableList()
+            // Обновляем JSON для передачи в CheckPlan
+            updateStepsJson()
+            updateProgress()
+        }
+
         adapter = StepProgressAdapter(steps) { position, newStatus ->
             toggleStepStatus(position, newStatus)
         }
@@ -66,7 +90,7 @@ class Goal_List : AppCompatActivity() {
             intent.putExtra("title", planTitle)
             intent.putExtra("description", description)
             intent.putExtra("targetDate", targetDate)
-            intent.putExtra("stepsDtoJson", stepsDtoJson)   // ← передаём именно этот ключ
+            intent.putExtra("stepsDtoJson", stepsDtoJson)
             startActivity(intent)
         }
 
@@ -109,15 +133,13 @@ class Goal_List : AppCompatActivity() {
                                 id = it.id,
                                 day = it.sortOrder,
                                 description = it.description,
-                                isCompleted = it.completed   // сервер возвращает completed
+                                isCompleted = it.completed
                             )
-                        }.sortedBy { it.day }   // сортировка только по дню, без перемещения выполненных
-                            .toMutableList()
+                        }.sortedBy { it.day }.toMutableList()
 
                         steps = newSteps
                         adapter.updateItems(steps)
-
-                        updateStepsJson()   // обновляем JSON для передачи
+                        updateStepsJson()
                         updateProgress()
                     } else {
                         val errorBody = response.errorBody()?.string()
@@ -141,10 +163,9 @@ class Goal_List : AppCompatActivity() {
         }
 
         val step = steps[position]
-
         val request = UpdateStepRequest(
             description = step.description,
-            isCompleted = newStatus,   // сервер принимает isCompleted
+            isCompleted = newStatus,
             sortOrder = step.day
         )
 
@@ -160,12 +181,9 @@ class Goal_List : AppCompatActivity() {
 
                     if (response.isSuccessful) {
                         steps[position] = steps[position].copy(isCompleted = newStatus)
-                        // Не сортируем – оставляем порядок по дням
                         adapter.updateItems(steps)
-
-                        updateStepsJson()   // обновляем JSON
+                        updateStepsJson()
                         updateProgress()
-
                         Log.d("Goal_List", "✅ Step ${step.id} updated successfully")
                         Toast.makeText(this@Goal_List, "Статус обновлён", Toast.LENGTH_SHORT).show()
                     } else {
@@ -185,10 +203,9 @@ class Goal_List : AppCompatActivity() {
             })
     }
 
-    // 🔥 ИСПРАВЛЕННЫЙ МЕТОД – теперь сохраняем StepDto
     private fun updateStepsJson() {
         val stepDtos = steps.map {
-            StepDto(it.description, it.day)   // day → sortOrder
+            StepDto(it.description, it.day)
         }
         stepsDtoJson = Gson().toJson(stepDtos)
     }

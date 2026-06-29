@@ -111,7 +111,7 @@ class Generate : BaseActivity() {
 
         val gson = Gson()
         val stepsJson = gson.toJson(planData.steps)
-        intent.putExtra("stepsJson", stepsJson)
+        intent.putExtra("stepsDtoJson", stepsJson)
 
         startActivity(intent)
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
