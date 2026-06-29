@@ -1,5 +1,7 @@
 package com.example.planova.adapter
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -18,30 +20,10 @@ class EditStepAdapter(
     }
 
     override fun onBindViewHolder(holder: EditStepViewHolder, position: Int) {
-        val step = steps[position]
-        holder.bind(step, position)
-
-        holder.binding.etStepDescription.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                val newText = holder.binding.etStepDescription.text.toString().trim()
-                if (newText != step.description) {
-                    onTextChange(position, newText)
-                }
-            }
-        }
-
-        holder.binding.ivDeleteStep.setOnClickListener {
-            onDelete(position)
-        }
+        holder.bind(steps[position])
     }
 
     override fun getItemCount(): Int = steps.size
-
-    fun updateList(newSteps: List<StepDto>) {
-        steps.clear()
-        steps.addAll(newSteps)
-        notifyDataSetChanged()
-    }
 
     fun addStep(description: String = "") {
         steps.add(StepDto(description, steps.size + 1))
@@ -51,9 +33,33 @@ class EditStepAdapter(
     inner class EditStepViewHolder(val binding: ItemEditStepBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(step: StepDto, position: Int) {
-            binding.tvStepNumber.text = "${position + 1}."
+        private var textWatcher: TextWatcher? = null
+
+        fun bind(step: StepDto) {
+            // Remove old watcher to avoid multiple triggers during recycling
+            textWatcher?.let { binding.etStepDescription.removeTextChangedListener(it) }
+
+            binding.tvStepNumber.text = "${bindingAdapterPosition + 1}."
             binding.etStepDescription.setText(step.description)
+
+            textWatcher = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    val pos = bindingAdapterPosition
+                    if (pos != RecyclerView.NO_POSITION) {
+                        onTextChange(pos, s?.toString() ?: "")
+                    }
+                }
+            }
+            binding.etStepDescription.addTextChangedListener(textWatcher)
+
+            binding.ivDeleteStep.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onDelete(pos)
+                }
+            }
         }
     }
 }

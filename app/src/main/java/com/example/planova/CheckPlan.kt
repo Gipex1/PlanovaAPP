@@ -28,15 +28,9 @@ class CheckPlan : BaseActivity() {
     private var title: String = ""
     private var description: String = ""
     private var targetDate: String = ""
-    private lateinit var steps: List<StepDto>
+    private var steps: List<StepDto> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Вместо жестких текстов используй:
-        getString(R.string.my_goals)
-        getString(R.string.active)
-        getString(R.string.completed)
-        getString(R.string.delete)
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityCheckPlanBinding.inflate(layoutInflater)
@@ -59,25 +53,24 @@ class CheckPlan : BaseActivity() {
         val stepsJson = intent.getStringExtra("stepsJson") ?: "[]"
 
         val type = object : TypeToken<List<StepDto>>() {}.type
-        steps = Gson().fromJson(stepsJson, type)
+        steps = try {
+            Gson().fromJson(stepsJson, type)
+        } catch (e: Exception) {
+            emptyList()
+        }
 
         // Заполняем UI
-        binding.tvPlanTitle.text = title
-        binding.tvPlanDescription.text = description
-
-        binding.rvSteps.layoutManager = LinearLayoutManager(this)
-        binding.rvSteps.adapter = StepAdapter(steps)
+        updateUI()
 
         // Назад
         binding.backArrow.setOnClickListener { finish() }
 
-        // ===== ВСЕ 4 КНОПКИ ВСЕГДА ВИДНЫ =====
         // Сохранить
         binding.llSave.setOnClickListener {
             savePlan(title, description, targetDate, steps)
         }
 
-        // Переделать нажо сделать переход на генерацию
+        // Переделать
         binding.llReset.setOnClickListener {
             regeneratePlan()
         }
@@ -88,7 +81,10 @@ class CheckPlan : BaseActivity() {
             intent.putExtra("planId", planId)
             intent.putExtra("title", title)
             intent.putExtra("description", description)
-            intent.putExtra("stepsJson", Gson().toJson(steps.map { StepDto(it.description, it.sortOrder) }))
+            intent.putExtra("targetDate", targetDate)
+            // Сериализуем текущие шаги (они могли измениться после регенерации)
+            val currentStepsJson = Gson().toJson(steps)
+            intent.putExtra("stepsJson", currentStepsJson)
             startActivity(intent)
         }
 
@@ -97,10 +93,17 @@ class CheckPlan : BaseActivity() {
             deletePlan(planId)
         }
 
-        // Нижнее меню – переход на список планов
+        // Нижнее меню
         binding.menuBooks.setOnClickListener {
             startActivity(Intent(this, My_Goals::class.java))
         }
+    }
+
+    private fun updateUI() {
+        binding.tvPlanTitle.text = title
+        binding.tvPlanDescription.text = description
+        binding.rvSteps.layoutManager = LinearLayoutManager(this)
+        binding.rvSteps.adapter = StepAdapter(steps)
     }
 
     private fun savePlan(title: String, description: String, targetDate: String, steps: List<StepDto>) {
@@ -156,11 +159,7 @@ class CheckPlan : BaseActivity() {
                             description = newPlan.description
                             targetDate = newPlan.targetDate
                             steps = newPlan.steps
-
-                            binding.tvPlanTitle.text = title
-                            binding.tvPlanDescription.text = description
-                            binding.rvSteps.adapter = StepAdapter(steps)
-
+                            updateUI()
                             Toast.makeText(this@CheckPlan, getString(R.string.plan_regenerated), Toast.LENGTH_SHORT).show()
                         } else {
                             Toast.makeText(this@CheckPlan, getString(R.string.generate_error), Toast.LENGTH_LONG).show()

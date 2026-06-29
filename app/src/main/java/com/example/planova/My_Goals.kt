@@ -115,13 +115,23 @@ class My_Goals : BaseActivity() {
                         val intent = Intent(this@My_Goals, Goal_List::class.java)
                         intent.putExtra("planId", data.id)
                         intent.putExtra("planTitle", data.title)
+                        intent.putExtra("description", data.description ?: "")
+                        intent.putExtra("targetDate", data.targetDate ?: "")
                         intent.putExtra("category", data.category ?: "Общее")
                         intent.putExtra("progress", calculateProgress(data.steps))
                         intent.putExtra("totalDays", data.steps.size)
-                        val stepsJson = Gson().toJson(
+                        
+                        val stepsProgressJson = Gson().toJson(
                             data.steps.map { StepProgressItem(it.sortOrder, it.description, it.isCompleted) }
                         )
-                        intent.putExtra("stepsJson", stepsJson)
+                        intent.putExtra("stepsJson", stepsProgressJson)
+
+                        // Передаем также StepDto для CheckPlan
+                        val stepsDtoJson = Gson().toJson(
+                            data.steps.map { StepDto(it.description, it.sortOrder) }
+                        )
+                        intent.putExtra("stepsDtoJson", stepsDtoJson)
+
                         startActivity(intent)
                     } else {
                         Toast.makeText(this@My_Goals, "Не удалось загрузить план", Toast.LENGTH_SHORT).show()
