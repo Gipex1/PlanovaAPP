@@ -8,9 +8,9 @@ import android.util.Patterns
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.planova.data.LoginRequest
+import com.example.planova.data.UserResponse
 import com.example.planova.network.ApiClient
 import com.example.planova.utils.SharedPrefs
 import com.google.android.material.button.MaterialButton
@@ -116,14 +116,16 @@ class MainActivity : BaseActivity() {
                     if (response.isSuccessful) {
                         val userId = response.body()?.get("userId")
                         if (userId != null) {
+                            // Сохраняем userId и email сразу (пароль – если нужно)
                             prefs.saveUserData(
                                 userId = userId,
+                                username = "", // временно, пока не загрузим с сервера
                                 email = email,
-                                password = if (switchRemember.isChecked) password else null,
+                                password = password,
                                 remember = switchRemember.isChecked
                             )
-                            startActivity(Intent(this@MainActivity, Home::class.java))
-                            finish()
+                            // Теперь запрашиваем данные пользователя, чтобы получить username
+                            fetchUserProfile(userId)
                         } else {
                             showError("Не удалось получить userId")
                         }
@@ -140,6 +142,39 @@ class MainActivity : BaseActivity() {
                     showError("Ошибка сети: ${t.message}")
                 }
             })
+    }
+
+    /**
+     * Запрашивает профиль пользователя, чтобы получить username и обновить SharedPrefs.
+     */
+    private fun fetchUserProfile(userId: Long) {
+        ApiClient.apiService.getMe(userId).enqueue(object : Callback<UserResponse> {
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                if (response.isSuccessful) {
+                    val user = response.body()
+                    if (user != null) {
+                        val username = user.username ?: ""
+                        // Обновляем запись в SharedPrefs с корректным username
+                        prefs.saveUserData(
+                            userId = userId,
+                            username = username,
+                            email = prefs.getEmail() ?: "",
+                            password = prefs.getPassword(),
+                            remember = switchRemember.isChecked
+                        )
+                    }
+                }
+                // В любом случае переходим в Home, даже если username не загрузился
+                startActivity(Intent(this@MainActivity, Home::class.java))
+                finish()
+            }
+
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                // Если не удалось загрузить профиль, всё равно переходим в Home
+                startActivity(Intent(this@MainActivity, Home::class.java))
+                finish()
+            }
+        })
     }
 
     private fun validateEmail(email: String): Boolean {
