@@ -66,7 +66,7 @@ class Goal_List : AppCompatActivity() {
             intent.putExtra("title", planTitle)
             intent.putExtra("description", description)
             intent.putExtra("targetDate", targetDate)
-            intent.putExtra("stepsJson", stepsDtoJson)
+            intent.putExtra("stepsDtoJson", stepsDtoJson)   // ← передаём именно этот ключ
             startActivity(intent)
         }
 
@@ -81,9 +81,8 @@ class Goal_List : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Не перезагружаем план, если он уже загружен, чтобы не сбрасывать изменения
-        // Если хочешь обновлять при возврате – оставь, но тогда будут лишние запросы
-        // if (planId != -1L && steps.isEmpty()) {
+        // Если нужно обновлять при возврате – раскомментируй
+        // if (planId != -1L) {
         //     loadPlanFromServer()
         // }
     }
@@ -105,21 +104,20 @@ class Goal_List : AppCompatActivity() {
                         targetDate = data.targetDate ?: ""
                         binding.titleGenerating.text = planTitle
 
-                        // Шаги всегда по порядку дня (без перемещения выполненных вниз)
                         val newSteps = data.steps.map {
                             StepProgressItem(
                                 id = it.id,
                                 day = it.sortOrder,
                                 description = it.description,
-                                isCompleted = it.completed
+                                isCompleted = it.completed   // сервер возвращает completed
                             )
-                        }.sortedBy { it.day }  // ← только по дню
+                        }.sortedBy { it.day }   // сортировка только по дню, без перемещения выполненных
                             .toMutableList()
 
                         steps = newSteps
                         adapter.updateItems(steps)
 
-                        updateStepsJson()
+                        updateStepsJson()   // обновляем JSON для передачи
                         updateProgress()
                     } else {
                         val errorBody = response.errorBody()?.string()
@@ -161,13 +159,11 @@ class Goal_List : AppCompatActivity() {
                     Log.d("Goal_List", "✅ Response code: ${response.code()}")
 
                     if (response.isSuccessful) {
-                        // Обновляем статус, НО НЕ СОРТИРУЕМ
                         steps[position] = steps[position].copy(isCompleted = newStatus)
-                        // Просто обновляем адаптер (без пересортировки)
+                        // Не сортируем – оставляем порядок по дням
                         adapter.updateItems(steps)
-                        // или adapter.notifyItemChanged(position) – будет быстрее, но тогда не обновится прогресс? лучше updateItems
 
-                        updateStepsJson()
+                        updateStepsJson()   // обновляем JSON
                         updateProgress()
 
                         Log.d("Goal_List", "✅ Step ${step.id} updated successfully")
@@ -189,11 +185,12 @@ class Goal_List : AppCompatActivity() {
             })
     }
 
+    // 🔥 ИСПРАВЛЕННЫЙ МЕТОД – теперь сохраняем StepDto
     private fun updateStepsJson() {
-        val updatedSteps = steps.map {
-            StepProgressItem(it.id, it.day, it.description, it.isCompleted)
+        val stepDtos = steps.map {
+            StepDto(it.description, it.day)   // day → sortOrder
         }
-        stepsDtoJson = Gson().toJson(updatedSteps)
+        stepsDtoJson = Gson().toJson(stepDtos)
     }
 
     private fun updateProgress() {

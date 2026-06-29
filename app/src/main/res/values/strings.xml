@@ -172,5 +172,7 @@
     <string name="plan_not_saved">План ещё не сохранён</string>
     <string name="plan_deleted">План удалён</string>
     <string name="delete_error">Ошибка удаления</string>
-
+    <!-- CheckPlan (дополнительные) -->
+    <string name="plan_updated" translatable="false">План обновлён!</string>
+    <string name="update_error" translatable="false">Ошибка обновления</string>
 </resources>

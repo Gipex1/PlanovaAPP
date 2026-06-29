@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,11 +49,12 @@ class CheckPlan : BaseActivity() {
         title = intent.getStringExtra("title") ?: getString(R.string.namePlan)
         description = intent.getStringExtra("description") ?: getString(R.string.descriptonPlan)
         targetDate = intent.getStringExtra("targetDate") ?: ""
-        val stepsJson = intent.getStringExtra("stepsJson") ?: "[]"
 
+        // 🔥 Исправлено: читаем правильный ключ "stepsDtoJson", а не "stepsJson"
+        val stepsDtoJson = intent.getStringExtra("stepsDtoJson") ?: "[]"
         val type = object : TypeToken<List<StepDto>>() {}.type
         steps = try {
-            Gson().fromJson(stepsJson, type)
+            Gson().fromJson(stepsDtoJson, type)
         } catch (e: Exception) {
             emptyList()
         }
@@ -65,9 +65,9 @@ class CheckPlan : BaseActivity() {
         // Назад
         binding.backArrow.setOnClickListener { finish() }
 
-        // Сохранить
+        // Сохранить – теперь с проверкой на существующий план
         binding.llSave.setOnClickListener {
-            savePlan(title, description, targetDate, steps)
+            saveOrUpdatePlan()
         }
 
         // Переделать
@@ -103,10 +103,12 @@ class CheckPlan : BaseActivity() {
         binding.tvPlanTitle.text = title
         binding.tvPlanDescription.text = description
         binding.rvSteps.layoutManager = LinearLayoutManager(this)
+        // Адаптер StepAdapter должен использовать sortOrder как день
         binding.rvSteps.adapter = StepAdapter(steps)
     }
 
-    private fun savePlan(title: String, description: String, targetDate: String, steps: List<StepDto>) {
+    // 🔥 Новый метод: сохранение или обновление
+    private fun saveOrUpdatePlan() {
         val userId = prefs.getUserId()
         if (userId == null) {
             Toast.makeText(this, getString(R.string.login_first), Toast.LENGTH_SHORT).show()
@@ -119,25 +121,56 @@ class CheckPlan : BaseActivity() {
 
         binding.llSave.isEnabled = false
 
-        ApiClient.apiService.savePlan(userId, planRequest)
-            .enqueue(object : Callback<PlanResponse> {
-                override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
-                    binding.llSave.isEnabled = true
-                    if (response.isSuccessful) {
-                        Toast.makeText(this@CheckPlan, getString(R.string.plan_saved), Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@CheckPlan, My_Goals::class.java))
-                        finish()
-                    } else {
-                        val error = response.errorBody()?.string() ?: getString(R.string.save_error)
-                        Toast.makeText(this@CheckPlan, error, Toast.LENGTH_LONG).show()
+        if (planId != -1L) {
+            // ✅ Обновление существующего плана
+            val updateRequest = UpdatePlanRequest(
+                title = title,
+                description = description,
+                status = null,           // оставляем без изменений
+                targetDate = targetDate,
+                steps = stepRequests      // передаём обновлённые шаги
+            )
+            ApiClient.apiService.updatePlan(userId, planId, updateRequest)
+                .enqueue(object : Callback<PlanResponse> {
+                    override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
+                        binding.llSave.isEnabled = true
+                        if (response.isSuccessful) {
+                            Toast.makeText(this@CheckPlan, getString(R.string.plan_updated), Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@CheckPlan, My_Goals::class.java))
+                            finish()
+                        } else {
+                            val error = response.errorBody()?.string() ?: getString(R.string.update_error)
+                            Toast.makeText(this@CheckPlan, error, Toast.LENGTH_LONG).show()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<PlanResponse>, t: Throwable) {
-                    binding.llSave.isEnabled = true
-                    Toast.makeText(this@CheckPlan, getString(R.string.network_error) + ": ${t.message}", Toast.LENGTH_LONG).show()
-                }
-            })
+                    override fun onFailure(call: Call<PlanResponse>, t: Throwable) {
+                        binding.llSave.isEnabled = true
+                        Toast.makeText(this@CheckPlan, getString(R.string.network_error) + ": ${t.message}", Toast.LENGTH_LONG).show()
+                    }
+                })
+        } else {
+            // ✅ Создание нового плана
+            ApiClient.apiService.savePlan(userId, planRequest)
+                .enqueue(object : Callback<PlanResponse> {
+                    override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
+                        binding.llSave.isEnabled = true
+                        if (response.isSuccessful) {
+                            Toast.makeText(this@CheckPlan, getString(R.string.plan_saved), Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@CheckPlan, My_Goals::class.java))
+                            finish()
+                        } else {
+                            val error = response.errorBody()?.string() ?: getString(R.string.save_error)
+                            Toast.makeText(this@CheckPlan, error, Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<PlanResponse>, t: Throwable) {
+                        binding.llSave.isEnabled = true
+                        Toast.makeText(this@CheckPlan, getString(R.string.network_error) + ": ${t.message}", Toast.LENGTH_LONG).show()
+                    }
+                })
+        }
     }
 
     private fun regeneratePlan() {

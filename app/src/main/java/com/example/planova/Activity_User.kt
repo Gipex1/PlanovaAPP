@@ -19,27 +19,27 @@ class Activity_User : BaseActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        var next1 = findViewById<ImageView>(R.id.menu_home)
+        val next1 = findViewById<ImageView>(R.id.menu_home)
         next1.setOnClickListener {
             startActivity(Intent(this@Activity_User, Home::class.java))
         }
 
-        var next2 = findViewById<ImageView>(R.id.menu_book)
+        val next2 = findViewById<ImageView>(R.id.menu_book)
         next2.setOnClickListener {
             startActivity(Intent(this@Activity_User, My_Goals::class.java))
         }
 
-        var next3 = findViewById<ImageView>(R.id.menu_history)
+        val next3 = findViewById<ImageView>(R.id.menu_history)
         next3.setOnClickListener {
-            Toast.makeText(this, "Еще в разработке", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, My_Goals_Complat::class.java))
         }
 
-        var setting = findViewById<ImageView>(R.id.ivSettings)
+        val setting = findViewById<ImageView>(R.id.ivSettings)
         setting.setOnClickListener {
             startActivity(Intent(this, SettingActivity::class.java))
         }
 
-        var editProf = findViewById<ImageView>(R.id.ivEditProfile)
+        val editProf = findViewById<ImageView>(R.id.ivEditProfile)
         editProf.setOnClickListener {
             Toast.makeText(this, "Еще в разработке", Toast.LENGTH_SHORT).show()
         }
