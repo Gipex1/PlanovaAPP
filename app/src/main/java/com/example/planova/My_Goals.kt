@@ -2,9 +2,8 @@ package com.example.planova
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
+import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.planova.adapter.PlanAdapter
 import com.example.planova.adapter.PlanItem
@@ -32,7 +31,7 @@ class My_Goals : BaseActivity() {
 
         prefs = SharedPrefs(this)
 
-        // Проверяем, авторизован ли пользователь
+        // Проверка авторизации
         val userId = prefs.getUserId()
         if (userId == null) {
             Toast.makeText(this, "Сначала войдите в аккаунт", Toast.LENGTH_SHORT).show()
@@ -41,65 +40,113 @@ class My_Goals : BaseActivity() {
             return
         }
 
-        // Настраиваем RecyclerView с кликом
+        // Адаптер
         adapter = PlanAdapter(emptyList()) { plan ->
-            // Обработка клика по плану – открываем CheckPlan
             openPlanDetail(plan)
         }
         binding.rvPlans.layoutManager = LinearLayoutManager(this)
         binding.rvPlans.adapter = adapter
 
-        // Загружаем планы
-        loadPlans(userId)
-
         // Нижнее меню
         binding.menuHome.setOnClickListener {
             startActivity(Intent(this, Home::class.java))
         }
-
         binding.menuProfile.setOnClickListener {
             startActivity(Intent(this, Activity_User::class.java))
         }
-
         binding.menuHistory.setOnClickListener {
-            Toast.makeText(this, "Еще в разработке", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, My_Goals_Complat::class.java))
         }
-
-        // Кнопка "+" – переход на генерацию
         binding.btnAdd.setOnClickListener {
             startActivity(Intent(this, Home::class.java))
         }
-
         binding.tvCompleted.setOnClickListener {
             startActivity(Intent(this, My_Goals_Complat::class.java))
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val userId = prefs.getUserId()
+        if (userId != null) {
+            loadPlans(userId)   // обновляем список при возврате
+        }
+    }
+
     private fun loadPlans(userId: Long) {
         ApiClient.apiService.getPlans(userId).enqueue(object : Callback<List<PlanResponse>> {
-            override fun onResponse(
-                call: Call<List<PlanResponse>>,
-                response: Response<List<PlanResponse>>
-            ) {
+            override fun onResponse(call: Call<List<PlanResponse>>, response: Response<List<PlanResponse>>) {
                 if (response.isSuccessful) {
                     val plans = response.body() ?: emptyList()
-                    val items = plans.map { plan ->
-                        PlanItem(
-                            id = plan.id,
-                            title = plan.title,
-                            category = plan.category ?: "Общее",
-                            progress = calculateProgress(plan.steps)
-                        )
+                    if (plans.isEmpty()) {
+                        adapter.updateItems(emptyList())
+                        return
                     }
-                    adapter.updateItems(items)
+
+                    // Загружаем каждый план отдельно, чтобы получить шаги
+                    var loadedCount = 0
+                    val items = mutableListOf<PlanItem>()
+
+                    plans.forEach { planSummary ->
+                        ApiClient.apiService.getPlan(userId, planSummary.id)
+                            .enqueue(object : Callback<PlanResponse> {
+                                override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
+                                    loadedCount++
+                                    if (response.isSuccessful) {
+                                        val fullPlan = response.body()!!
+                                        val progress = calculateProgress(fullPlan.steps)
+                                        items.add(
+                                            PlanItem(
+                                                id = fullPlan.id,
+                                                title = fullPlan.title,
+                                                category = fullPlan.category ?: "Общее",
+                                                progress = progress
+                                            )
+                                        )
+                                    } else {
+                                        // Если не удалось загрузить детали – добавляем с прогрессом 0
+                                        items.add(
+                                            PlanItem(
+                                                id = planSummary.id,
+                                                title = planSummary.title,
+                                                category = planSummary.category ?: "Общее",
+                                                progress = 0
+                                            )
+                                        )
+                                    }
+
+                                    // Когда все планы загружены – обновляем адаптер
+                                    if (loadedCount == plans.size) {
+                                        // Фильтруем активные (progress < 100)
+                                        val activeItems = items.filter { it.progress < 100 }
+                                        adapter.updateItems(activeItems)
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<PlanResponse>, t: Throwable) {
+                                    loadedCount++
+                                    items.add(
+                                        PlanItem(
+                                            id = planSummary.id,
+                                            title = planSummary.title,
+                                            category = planSummary.category ?: "Общее",
+                                            progress = 0
+                                        )
+                                    )
+                                    if (loadedCount == plans.size) {
+                                        val activeItems = items.filter { it.progress < 100 }
+                                        adapter.updateItems(activeItems)
+                                    }
+                                }
+                            })
+                    }
                 } else {
-                    val error = response.errorBody()?.string() ?: "Ошибка загрузки"
-                    Toast.makeText(this@My_Goals, error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@My_Goals, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<PlanResponse>>, t: Throwable) {
-                Toast.makeText(this@My_Goals, "Ошибка сети: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@My_Goals, "Ошибка сети", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -122,20 +169,17 @@ class My_Goals : BaseActivity() {
                         intent.putExtra("description", data.description ?: "")
                         intent.putExtra("targetDate", data.targetDate ?: "")
                         intent.putExtra("category", data.category ?: "Общее")
-                        intent.putExtra("progress", calculateProgress(data.steps))
-                        intent.putExtra("totalDays", data.steps.size)
 
                         val stepsProgressJson = Gson().toJson(
                             data.steps.map { StepProgressItem(
                                 id = it.id,
                                 day = it.sortOrder,
                                 description = it.description,
-                                isCompleted = it.completed  // ← было it.isCompleted
+                                isCompleted = it.completed
                             ) }
                         )
                         intent.putExtra("stepsJson", stepsProgressJson)
 
-                        // Передаем также StepDto для CheckPlan
                         val stepsDtoJson = Gson().toJson(
                             data.steps.map { StepDto(it.description, it.sortOrder) }
                         )
@@ -156,7 +200,7 @@ class My_Goals : BaseActivity() {
     private fun calculateProgress(steps: List<StepResponse>?): Int {
         if (steps.isNullOrEmpty()) return 0
         val total = steps.size
-        val completed = steps.count { it.completed } // ← исправлено
+        val completed = steps.count { it.completed }
         return if (total > 0) (completed * 100) / total else 0
     }
 }
