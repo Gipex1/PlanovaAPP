@@ -1,6 +1,7 @@
 package com.example.planova
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +19,9 @@ import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.Manifest
+import com.google.gson.internal.`$Gson$Types`.arrayOf
+import kotlin.arrayOf
 
 class MainActivity : BaseActivity() {
 
@@ -40,6 +44,10 @@ class MainActivity : BaseActivity() {
         loadSavedCredentials()
         setupTextWatchers()
         setupClickListeners()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS) as Array<out String?>, 100)
+        }
     }
 
     private fun initViews() {

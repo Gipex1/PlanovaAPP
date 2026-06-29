@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.planova.utils.NotificationHelper
 import java.util.*
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -22,6 +23,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
         val context = newBase.createConfigurationContext(config)
         super.attachBaseContext(context)
+        // Создаём канал уведомлений при первом запуске
+        NotificationHelper(this).createNotificationChannel()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

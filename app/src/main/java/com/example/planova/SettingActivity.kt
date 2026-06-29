@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import com.example.planova.utils.NotificationHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
@@ -89,6 +90,11 @@ class SettingActivity : BaseActivity() {
     }
 
     private fun setupClickListeners() {
+        llNotifications?.setOnClickListener {
+            animateClick(it)
+            showNotificationTestDialog()
+        }
+
         backArrow?.setOnClickListener {
             animateClick(it)
             finishWithAnimation()
@@ -108,6 +114,14 @@ class SettingActivity : BaseActivity() {
                 Toast.LENGTH_SHORT
             ).show()
             switchNotifications?.let { animateSwitch(it) }
+            if (isChecked) {
+                // Отправляем уведомление через 5 секунд после включения
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    NotificationHelper(this@SettingActivity).sendTestNotification(
+                        "Уведомления включены!"
+                    )
+                }, 5000)
+            }
         }
 
         switchTheme?.setOnCheckedChangeListener { _, isChecked ->
@@ -288,5 +302,22 @@ class SettingActivity : BaseActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         switchNotifications?.isChecked = savedInstanceState.getBoolean("notifications")
         switchTheme?.isChecked = savedInstanceState.getBoolean("theme")
+    }
+
+    private fun showNotificationTestDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Тестовое уведомление")
+            .setMessage("Отправить уведомление через 5 секунд?")
+            .setPositiveButton("Да") { _, _ ->
+                // Создаём уведомление с задержкой
+                val helper = NotificationHelper(this)
+                helper.createNotificationChannel() // на всякий случай
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    helper.sendTestNotification("Привет! Это уведомление через 5 секунд.")
+                    Toast.makeText(this, "Уведомление отправлено!", Toast.LENGTH_SHORT).show()
+                }, 5000) // 5000 мс = 5 секунд
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
     }
 }
