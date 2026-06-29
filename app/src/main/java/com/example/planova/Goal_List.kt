@@ -2,6 +2,7 @@ package com.example.planova
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,15 +10,23 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.planova.adapter.StepProgressAdapter
-import com.example.planova.data.StepProgressItem
+import com.example.planova.data.*
 import com.example.planova.databinding.ActivityGoalListBinding
+import com.example.planova.network.ApiClient
+import com.example.planova.utils.SharedPrefs
+import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class Goal_List : BaseActivity() {
+class Goal_List : AppCompatActivity() {
 
     private lateinit var binding: ActivityGoalListBinding
     private lateinit var adapter: StepProgressAdapter
+    private lateinit var prefs: SharedPrefs
     private var planId: Long = -1
     private lateinit var steps: MutableList<StepProgressItem>
+    private var planTitle: String = ""
     private var description: String = ""
     private var targetDate: String = ""
     private var stepsDtoJson: String = "[]"
@@ -34,49 +43,23 @@ class Goal_List : BaseActivity() {
             insets
         }
 
-        // Получаем данные из Intent
+        prefs = SharedPrefs(this)
+
         planId = intent.getLongExtra("planId", -1)
-        val planTitle = intent.getStringExtra("planTitle") ?: getString(R.string.namePlan)
-        val category = intent.getStringExtra("category") ?: "Общее"
-        val progress = intent.getIntExtra("progress", 0)
-        val totalDays = intent.getIntExtra("totalDays", 7)
+        planTitle = intent.getStringExtra("planTitle") ?: "Название плана"
         description = intent.getStringExtra("description") ?: ""
         targetDate = intent.getStringExtra("targetDate") ?: ""
-        stepsDtoJson = intent.getStringExtra("stepsDtoJson") ?: "[]"
 
-        // Заполняем заголовок и категорию
         binding.titleGenerating.text = planTitle
-        binding.titleCategory.text = category
+        binding.titleCategory.text = intent.getStringExtra("category") ?: "Общее"
 
-        // Обновляем прогресс
-        binding.progressBar.progress = progress
-        binding.tvProgress.text = "$progress%"
-        binding.tvDaysInfo.text = "день ${(progress / 100.0 * totalDays).toInt()} из $totalDays"
-
-        // Получаем шаги для списка (StepProgressItem)
-        val stepsJson = intent.getStringExtra("stepsJson") ?: ""
-        steps = if (stepsJson.isNotEmpty()) {
-            try {
-                val gson = com.google.gson.Gson()
-                val type = object : com.google.gson.reflect.TypeToken<List<StepProgressItem>>() {}.type
-                val list: List<StepProgressItem> = gson.fromJson(stepsJson, type)
-                list.toMutableList()
-            } catch (e: Exception) {
-                emptyList<StepProgressItem>().toMutableList()
-            }
-        } else {
-            emptyList<StepProgressItem>().toMutableList()
-        }
-
-        // Настройка RecyclerView
-        adapter = StepProgressAdapter(steps) { position ->
-            // TODO: отправить запрос на сервер для обновления шага
-            updateProgress()
+        steps = mutableListOf()
+        adapter = StepProgressAdapter(steps) { position, newStatus ->
+            toggleStepStatus(position, newStatus)
         }
         binding.rvSteps.layoutManager = LinearLayoutManager(this)
         binding.rvSteps.adapter = adapter
 
-        // Кнопка "Открыть план" – переход на CheckPlan
         binding.btnSave.setOnClickListener {
             val intent = Intent(this, CheckPlan::class.java)
             intent.putExtra("planId", planId)
@@ -87,10 +70,130 @@ class Goal_List : BaseActivity() {
             startActivity(intent)
         }
 
-        // Назад
         binding.backArrow.setOnClickListener {
             finish()
         }
+
+        if (planId != -1L) {
+            loadPlanFromServer()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Не перезагружаем план, если он уже загружен, чтобы не сбрасывать изменения
+        // Если хочешь обновлять при возврате – оставь, но тогда будут лишние запросы
+        // if (planId != -1L && steps.isEmpty()) {
+        //     loadPlanFromServer()
+        // }
+    }
+
+    private fun loadPlanFromServer() {
+        val userId = prefs.getUserId()
+        if (userId == null) {
+            Toast.makeText(this, "Сначала войдите", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        ApiClient.apiService.getPlan(userId, planId)
+            .enqueue(object : Callback<PlanResponse> {
+                override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
+                    if (response.isSuccessful) {
+                        val data = response.body()!!
+                        planTitle = data.title
+                        description = data.description ?: ""
+                        targetDate = data.targetDate ?: ""
+                        binding.titleGenerating.text = planTitle
+
+                        // Шаги всегда по порядку дня (без перемещения выполненных вниз)
+                        val newSteps = data.steps.map {
+                            StepProgressItem(
+                                id = it.id,
+                                day = it.sortOrder,
+                                description = it.description,
+                                isCompleted = it.completed
+                            )
+                        }.sortedBy { it.day }  // ← только по дню
+                            .toMutableList()
+
+                        steps = newSteps
+                        adapter.updateItems(steps)
+
+                        updateStepsJson()
+                        updateProgress()
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("Goal_List", "Load plan error: $errorBody")
+                        Toast.makeText(this@Goal_List, "Не удалось загрузить план", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<PlanResponse>, t: Throwable) {
+                    Log.e("Goal_List", "Network error: ${t.message}")
+                    Toast.makeText(this@Goal_List, "Ошибка сети: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun toggleStepStatus(position: Int, newStatus: Boolean) {
+        val userId = prefs.getUserId()
+        if (userId == null) {
+            Toast.makeText(this, "Сначала войдите", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val step = steps[position]
+
+        val request = UpdateStepRequest(
+            description = step.description,
+            isCompleted = newStatus,   // сервер принимает isCompleted
+            sortOrder = step.day
+        )
+
+        Log.d("Goal_List", "➡️ Sending update: stepId=${step.id}, isCompleted=$newStatus")
+
+        binding.rvSteps.isEnabled = false
+
+        ApiClient.apiService.updateStep(userId, planId, step.id, request)
+            .enqueue(object : Callback<StepResponse> {
+                override fun onResponse(call: Call<StepResponse>, response: Response<StepResponse>) {
+                    binding.rvSteps.isEnabled = true
+                    Log.d("Goal_List", "✅ Response code: ${response.code()}")
+
+                    if (response.isSuccessful) {
+                        // Обновляем статус, НО НЕ СОРТИРУЕМ
+                        steps[position] = steps[position].copy(isCompleted = newStatus)
+                        // Просто обновляем адаптер (без пересортировки)
+                        adapter.updateItems(steps)
+                        // или adapter.notifyItemChanged(position) – будет быстрее, но тогда не обновится прогресс? лучше updateItems
+
+                        updateStepsJson()
+                        updateProgress()
+
+                        Log.d("Goal_List", "✅ Step ${step.id} updated successfully")
+                        Toast.makeText(this@Goal_List, "Статус обновлён", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("Goal_List", "❌ Server error: $errorBody")
+                        Toast.makeText(this@Goal_List, "Ошибка: $errorBody", Toast.LENGTH_LONG).show()
+                        adapter.updateItemStatus(position, !newStatus)
+                    }
+                }
+
+                override fun onFailure(call: Call<StepResponse>, t: Throwable) {
+                    binding.rvSteps.isEnabled = true
+                    Log.e("Goal_List", "❌ Network failure: ${t.message}")
+                    Toast.makeText(this@Goal_List, "Ошибка сети: ${t.message}", Toast.LENGTH_SHORT).show()
+                    adapter.updateItemStatus(position, !newStatus)
+                }
+            })
+    }
+
+    private fun updateStepsJson() {
+        val updatedSteps = steps.map {
+            StepProgressItem(it.id, it.day, it.description, it.isCompleted)
+        }
+        stepsDtoJson = Gson().toJson(updatedSteps)
     }
 
     private fun updateProgress() {
@@ -99,7 +202,6 @@ class Goal_List : BaseActivity() {
         val progress = if (total > 0) (completed * 100) / total else 0
         binding.progressBar.progress = progress
         binding.tvProgress.text = "$progress%"
-        val totalDays = intent.getIntExtra("totalDays", 7)
-        binding.tvDaysInfo.text = "день ${(progress / 100.0 * totalDays).toInt()} из $totalDays"
+        binding.tvDaysInfo.text = "день $completed из $total"
     }
 }

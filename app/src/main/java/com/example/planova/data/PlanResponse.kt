@@ -11,10 +11,3 @@ data class PlanResponse(
     val createdAt: String,
     val updatedAt: String
 )
-
-data class StepResponse(
-    val id: Long,
-    val description: String,
-    val sortOrder: Int,
-    val isCompleted: Boolean
-)

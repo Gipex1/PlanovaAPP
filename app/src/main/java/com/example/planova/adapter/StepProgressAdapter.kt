@@ -10,8 +10,8 @@ import com.example.planova.R
 import com.example.planova.data.StepProgressItem
 
 class StepProgressAdapter(
-    private var items: List<StepProgressItem>,
-    private val onStatusToggle: (Int) -> Unit
+    private var items: MutableList<StepProgressItem>,
+    private val onStatusToggle: (Int, Boolean) -> Unit
 ) : RecyclerView.Adapter<StepProgressAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,26 +25,31 @@ class StepProgressAdapter(
         holder.bind(item)
 
         holder.ivStatus.setOnClickListener {
-            // Меняем статус в объекте
-            val newItem = item.copy(isCompleted = !item.isCompleted)
-            items = items.toMutableList().apply { this[position] = newItem } // исправлено
-            // Обновляем иконку
-            holder.updateStatusIcon(newItem.isCompleted)
-            // Вызываем callback
-            onStatusToggle(position)
+            val newStatus = !items[position].isCompleted
+            items[position] = items[position].copy(isCompleted = newStatus)
+            holder.updateStatusIcon(newStatus)
+            onStatusToggle(position, newStatus)
         }
     }
 
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<StepProgressItem>) {
-        items = newItems
+        items.clear()
+        items.addAll(newItems)
         notifyDataSetChanged()
     }
 
+    fun updateItemStatus(position: Int, newStatus: Boolean) {
+        if (position in items.indices) {
+            items[position] = items[position].copy(isCompleted = newStatus)
+            notifyItemChanged(position)
+        }
+    }
+
     inner class ViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
-        val tvDay: TextView = itemView.findViewById(R.id.tvDay)
-        val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
+        private val tvDay: TextView = itemView.findViewById(R.id.tvDay)
+        private val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
         val ivStatus: ImageView = itemView.findViewById(R.id.ivStatus)
 
         fun bind(item: StepProgressItem) {
@@ -56,7 +61,7 @@ class StepProgressAdapter(
         fun updateStatusIcon(isCompleted: Boolean) {
             val iconRes = if (isCompleted) R.drawable.ic_accept3 else R.drawable.icc_error
             ivStatus.setImageResource(iconRes)
-            val tintColor = if (isCompleted) R.color.neon_green else R.color.dark_text_secondary
+            val tintColor = if (isCompleted) R.color.neon_green else R.color.error
             ivStatus.setColorFilter(
                 ContextCompat.getColor(ivStatus.context, tintColor)
             )
