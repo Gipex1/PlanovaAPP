@@ -34,22 +34,6 @@
         android:layout_marginTop="60dp"
         android:layout_marginStart="80dp"/>
 
-    <!-- Категория -->
-    <TextView
-        android:id="@+id/titleCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/categoryGL"
-        android:textColor="@color/dark_text_secondary"
-        android:textSize="16sp"
-        android:padding="5dp"
-        android:background="@drawable/button_background"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="100dp"
-        android:layout_marginStart="80dp"/>
-
     <!-- Поле "Прогресс" -->
     <LinearLayout
         android:id="@+id/llSave"

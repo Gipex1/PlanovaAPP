@@ -66,11 +66,9 @@ class SettingActivity : BaseActivity() {
         backArrow = findViewById(R.id.backArrow)
         llLanguage = findViewById(R.id.llLanguage)
         llNotifications = findViewById(R.id.llNotifications)
-        llTheme = findViewById(R.id.llTheme)
         llReset = findViewById(R.id.llReset)
         llInfo = findViewById(R.id.llInfo)
         switchNotifications = findViewById(R.id.switchNotifications)
-        switchTheme = findViewById(R.id.switchTheme)
         tvLanguage = findViewById(R.id.tvLanguage)
     }
 

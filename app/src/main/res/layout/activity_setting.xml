@@ -185,75 +185,6 @@
 
     </LinearLayout>
 
-    <!-- Пункт 3: Тема -->
-    <LinearLayout
-        android:id="@+id/llTheme"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/button_background"
-        android:clickable="true"
-        android:elevation="4dp"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llNotifications">
-
-        <!-- Левая часть -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="16dp"
-                android:alpha="0.9"
-                android:src="@drawable/ic_night"
-                app:tint="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:letterSpacing="0.02"
-                android:text="@string/there"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-        </LinearLayout>
-
-        <!-- Правая часть -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Switch
-                android:id="@+id/switchTheme"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:padding="0dp"
-                android:switchMinWidth="56dp"
-                android:thumb="@drawable/switch_thumb"
-                android:thumbTextPadding="0dp"
-                android:track="@drawable/switch_track" />
-        </LinearLayout>
-
-    </LinearLayout>
-
     <!-- Пункт 4: Сброс данных -->
     <LinearLayout
         android:id="@+id/llReset"
@@ -272,7 +203,7 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llTheme">
+        app:layout_constraintTop_toBottomOf="@+id/llNotifications">
 
         <!-- Левая часть -->
         <LinearLayout

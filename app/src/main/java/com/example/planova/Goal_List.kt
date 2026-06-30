@@ -52,7 +52,6 @@ class Goal_List : AppCompatActivity() {
         targetDate = intent.getStringExtra("targetDate") ?: ""
 
         binding.titleGenerating.text = planTitle
-        binding.titleCategory.text = intent.getStringExtra("category") ?: "Общее"
 
         // Инициализируем steps из Intent, если план новый
         steps = mutableListOf()

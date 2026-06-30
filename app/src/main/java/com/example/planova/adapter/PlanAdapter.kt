@@ -61,7 +61,6 @@ class PlanAdapter(
          */
         fun bind(item: PlanItem) {
             binding.tvPlanTitle.text = item.title
-            binding.tvPlanCategory.text = item.category
             binding.progressBar.progress = item.progress
             binding.tvProgressPercent.text = "${item.progress}%"
             // TODO: заменить иконку категории на реальную
